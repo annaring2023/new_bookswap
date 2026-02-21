@@ -49,11 +49,6 @@
                     {% endif %}
                 </div>
                 <div class="stars">★ ★ ★ ★ ★</div>
-                <form action="{% url 'request_exchange' listing.id %}" method="post">
-                    {% csrf_token %}
-                    <button class="btn btn-main" type="submit">Request exchange</button>
-                </form>
-                <a class="btn link-btn" href="{% url 'start_conversation' listing.id %}">Chat with owner</a>
             </section>
 
             <section class="right">

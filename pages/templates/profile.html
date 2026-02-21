@@ -283,25 +283,6 @@
         }
         .menu-btn:hover { transform: scale(1.1); }
         .menu-btn.add { background: #6C5DD3; color: white; }
-        .menu-btn.with-badge {
-            position: relative;
-        }
-        .menu-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            min-width: 20px;
-            height: 20px;
-            border-radius: 999px;
-            background: #ef889b;
-            color: #fff;
-            font-size: 11px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 5px;
-        }
 
     </style>
 </head>
@@ -445,7 +426,7 @@
         <div class="side-menu">
             <div class="menu-btn">👤</div>
             <div class="menu-btn add">+</div>
-            <a class="menu-btn with-badge" href="{% url 'messages_inbox' %}">💬{% if unread_count %}<span class="menu-badge">{{ unread_count }}</span>{% endif %}</a>
+            <div class="menu-btn">💬</div>
             <a class="menu-btn" href="{% url 'settings' %}">⚙️</a>
         </div>
 

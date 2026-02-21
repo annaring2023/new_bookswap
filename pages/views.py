@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from .models import Listing, UserProfile, Conversation, Message
+from .models import Listing, UserProfile
 
 FAVORITE_GENRE_CHOICES = [
     ('fantasy', 'Фентезі'),
@@ -22,25 +22,6 @@ FAVORITE_GENRE_CHOICES = [
 GENRE_LABELS = dict(FAVORITE_GENRE_CHOICES)
 
 
-def _build_conversation_rows(current_user, conversations):
-    rows = []
-    for conv in conversations:
-        other_user = next((u for u in conv.participants.all() if u.id != current_user.id), None)
-        avatar_url = ''
-        if other_user:
-            profile = UserProfile.objects.filter(user=other_user).first()
-            if profile and profile.avatar:
-                avatar_url = profile.avatar.url
-        unread_count = conv.messages.filter(is_read=False).exclude(sender=current_user).count()
-        rows.append({
-            'conversation': conv,
-            'other_user': other_user,
-            'avatar_url': avatar_url,
-            'unread_count': unread_count,
-        })
-    return rows
-
-
 def _normalize_hashtags(raw_text):
     parts = [p.strip().lstrip('#') for p in raw_text.replace(',', ' ').split()]
     clean = []
@@ -48,13 +29,6 @@ def _normalize_hashtags(raw_text):
         if p and p not in clean:
             clean.append(p.lower())
     return ' '.join(f'#{p}' for p in clean)
-
-
-def _unread_messages_count(user):
-    return Message.objects.filter(
-        conversation__participants=user,
-        is_read=False,
-    ).exclude(sender=user).count()
 
 # Головна сторінка
 def home(request):
@@ -98,7 +72,6 @@ def catalog(request):
         'condition_filter': condition_filter,
         'author_filter': author_filter,
         'language_filter': language_filter,
-        'unread_count': _unread_messages_count(request.user),
     })
 
 
@@ -116,126 +89,6 @@ def listing_detail(request, listing_id):
     return render(request, 'listing_detail.html', {
         'listing': listing,
         'owner_profile': owner_profile,
-    })
-
-
-def start_conversation(request, listing_id):
-    if not request.user.is_authenticated:
-        messages.error(request, 'Спочатку увійдіть в акаунт')
-        return redirect('home')
-
-    listing = get_object_or_404(Listing, id=listing_id)
-    if listing.owner_id == request.user.id:
-        messages.info(request, 'Це ваше оголошення')
-        return redirect('profile')
-
-    conversation = (
-        Conversation.objects.filter(listing=listing, participants=request.user)
-        .filter(participants=listing.owner)
-        .distinct()
-        .first()
-    )
-    if not conversation:
-        conversation = Conversation.objects.create(listing=listing)
-        conversation.participants.add(request.user, listing.owner)
-
-    return redirect('conversation_detail', conversation_id=conversation.id)
-
-
-def request_exchange(request, listing_id):
-    if not request.user.is_authenticated:
-        messages.error(request, 'Спочатку увійдіть в акаунт')
-        return redirect('home')
-    if request.method != 'POST':
-        return redirect('listing_detail', listing_id=listing_id)
-
-    listing = get_object_or_404(Listing, id=listing_id)
-    if listing.owner_id == request.user.id:
-        messages.info(request, 'Не можна надіслати запит на власну книгу')
-        return redirect('profile')
-
-    conversation = (
-        Conversation.objects.filter(listing=listing, participants=request.user)
-        .filter(participants=listing.owner)
-        .distinct()
-        .first()
-    )
-    if not conversation:
-        conversation = Conversation.objects.create(listing=listing)
-        conversation.participants.add(request.user, listing.owner)
-
-    auto_text = (
-        f"Привіт! Користувач @{request.user.username} хоче обміняти книгу "
-        f"«{listing.title}». Напишіть, будь ласка, умови обміну."
-    )
-    Message.objects.create(conversation=conversation, sender=request.user, text=auto_text)
-    conversation.save(update_fields=['updated_at'])
-    return redirect('conversation_detail', conversation_id=conversation.id)
-
-
-def messages_inbox(request):
-    if not request.user.is_authenticated:
-        return redirect('home')
-
-    conversations = list(
-        Conversation.objects.filter(participants=request.user)
-        .select_related('listing')
-        .prefetch_related('participants', 'messages')
-        .distinct()
-    )
-    selected = conversations[0] if conversations else None
-    if selected:
-        selected.messages.filter(is_read=False).exclude(sender=request.user).update(is_read=True)
-    conversation_rows = _build_conversation_rows(request.user, conversations)
-    selected_peer = next((r['other_user'] for r in conversation_rows if selected and r['conversation'].id == selected.id), None)
-    selected_peer_avatar = next((r['avatar_url'] for r in conversation_rows if selected and r['conversation'].id == selected.id), '')
-    selected_messages = selected.messages.select_related('sender') if selected else []
-    return render(request, 'messages.html', {
-        'conversation_rows': conversation_rows,
-        'selected': selected,
-        'selected_peer': selected_peer,
-        'selected_peer_avatar': selected_peer_avatar,
-        'selected_messages': selected_messages,
-        'unread_total': _unread_messages_count(request.user),
-    })
-
-
-def conversation_detail(request, conversation_id):
-    if not request.user.is_authenticated:
-        return redirect('home')
-
-    selected = get_object_or_404(
-        Conversation.objects.select_related('listing').prefetch_related('participants'),
-        id=conversation_id,
-        participants=request.user,
-    )
-
-    if request.method == 'POST':
-        text = request.POST.get('text', '').strip()
-        if text:
-            Message.objects.create(conversation=selected, sender=request.user, text=text)
-            selected.save(update_fields=['updated_at'])
-        return redirect('conversation_detail', conversation_id=selected.id)
-
-    selected.messages.filter(is_read=False).exclude(sender=request.user).update(is_read=True)
-
-    conversations = list(
-        Conversation.objects.filter(participants=request.user)
-        .select_related('listing')
-        .prefetch_related('participants', 'messages')
-        .distinct()
-    )
-    conversation_rows = _build_conversation_rows(request.user, conversations)
-    selected_peer = next((r['other_user'] for r in conversation_rows if r['conversation'].id == selected.id), None)
-    selected_peer_avatar = next((r['avatar_url'] for r in conversation_rows if r['conversation'].id == selected.id), '')
-    selected_messages = selected.messages.select_related('sender')
-    return render(request, 'messages.html', {
-        'conversation_rows': conversation_rows,
-        'selected': selected,
-        'selected_peer': selected_peer,
-        'selected_peer_avatar': selected_peer_avatar,
-        'selected_messages': selected_messages,
-        'unread_total': _unread_messages_count(request.user),
     })
 
 
@@ -275,7 +128,6 @@ def profile(request):
         'genre_choices': FAVORITE_GENRE_CHOICES,
         'selected_genres': selected_genres,
         'favorite_genres_display': favorite_genres_display,
-        'unread_count': _unread_messages_count(request.user),
     })
 
 # Логіка реєстрації
