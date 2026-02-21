@@ -38,42 +38,57 @@
                     <div class="filter-block">
                         <p>Оберіть жанр</p>
                         <div class="chip-row">
-                            <label class="chip"><input type="radio" name="genre_filter" value="" {% if not genre_filter %}checked{% endif %}>Усі</label>
-                            <label class="chip"><input type="radio" name="genre_filter" value="фентезі" {% if genre_filter == 'фентезі' %}checked{% endif %}>Фентезі</label>
-                            <label class="chip"><input type="radio" name="genre_filter" value="роман" {% if genre_filter == 'роман' %}checked{% endif %}>Романтика</label>
-                            <label class="chip"><input type="radio" name="genre_filter" value="науков" {% if genre_filter == 'науков' %}checked{% endif %}>Наукова</label>
-                            <label class="chip"><input type="radio" name="genre_filter" value="детектив" {% if genre_filter == 'детектив' %}checked{% endif %}>Детектив</label>
-                            <label class="chip"><input type="radio" name="genre_filter" value="психолог" {% if genre_filter == 'психолог' %}checked{% endif %}>Психологія</label>
-                            <label class="chip"><input type="radio" name="genre_filter" value="інше" {% if genre_filter == 'інше' %}checked{% endif %}>Інше</label>
+                            <label class="chip"><input type="radio" name="genre" value="" {% if not genre_filter %}checked{% endif %}>Усі</label>
+                            <label class="chip"><input type="radio" name="genre" value="фентезі" {% if genre_filter == 'фентезі' %}checked{% endif %}>Фентезі</label>
+                            <label class="chip"><input type="radio" name="genre" value="роман" {% if genre_filter == 'роман' %}checked{% endif %}>Романтика</label>
+                            <label class="chip"><input type="radio" name="genre" value="науков" {% if genre_filter == 'науков' %}checked{% endif %}>Наукова</label>
+                            <label class="chip"><input type="radio" name="genre" value="детектив" {% if genre_filter == 'детектив' %}checked{% endif %}>Детектив</label>
+                            <label class="chip"><input type="radio" name="genre" value="психолог" {% if genre_filter == 'психолог' %}checked{% endif %}>Психологія</label>
+                            <label class="chip"><input type="radio" name="genre" value="інше" {% if genre_filter == 'інше' %}checked{% endif %}>Інше</label>
                         </div>
                     </div>
 
                     <div class="filter-block">
                         <p>Оберіть стан книги</p>
                         <div class="chip-row">
-                            <label class="chip"><input type="radio" name="condition_filter" value="" {% if not condition_filter %}checked{% endif %}>Усі</label>
-                            <label class="chip"><input type="radio" name="condition_filter" value="almost_new" {% if condition_filter == 'almost_new' %}checked{% endif %}>Майже нова</label>
-                            <label class="chip"><input type="radio" name="condition_filter" value="average" {% if condition_filter == 'average' %}checked{% endif %}>Середній стан</label>
-                            <label class="chip"><input type="radio" name="condition_filter" value="poor" {% if condition_filter == 'poor' %}checked{% endif %}>Поганий стан</label>
+                            <label class="chip"><input type="radio" name="condition" value="" {% if not condition_filter %}checked{% endif %}>Усі</label>
+                            <label class="chip"><input type="radio" name="condition" value="almost_new" {% if condition_filter == 'almost_new' %}checked{% endif %}>Майже нова</label>
+                            <label class="chip"><input type="radio" name="condition" value="average" {% if condition_filter == 'average' %}checked{% endif %}>Середній стан</label>
+                            <label class="chip"><input type="radio" name="condition" value="poor" {% if condition_filter == 'poor' %}checked{% endif %}>Поганий стан</label>
                         </div>
                     </div>
 
                     <div class="filter-block">
                         <p>Оберіть автора</p>
-                        <input class="author-input" type="text" name="author_filter" value="{{ author_filter }}" placeholder="Введіть автора">
+                        <input class="author-input" type="text" name="author" value="{{ author_filter }}" placeholder="Введіть автора">
                     </div>
 
                     <div class="filter-block">
                         <p>Оберіть мову книги</p>
                         <div class="chip-row">
-                            <label class="chip"><input type="radio" name="language_filter" value="" {% if not language_filter %}checked{% endif %}>Усі</label>
-                            <label class="chip"><input type="radio" name="language_filter" value="англ" {% if language_filter == 'англ' %}checked{% endif %}>Англійська</label>
-                            <label class="chip"><input type="radio" name="language_filter" value="україн" {% if language_filter == 'україн' %}checked{% endif %}>Українська</label>
-                            <label class="chip"><input type="radio" name="language_filter" value="поль" {% if language_filter == 'поль' %}checked{% endif %}>Польська</label>
-                            <label class="chip"><input type="radio" name="language_filter" value="нім" {% if language_filter == 'нім' %}checked{% endif %}>Німецька</label>
-                            <label class="chip"><input type="radio" name="language_filter" value="франц" {% if language_filter == 'франц' %}checked{% endif %}>Французька</label>
+                            <label class="chip"><input type="radio" name="language" value="" {% if not language_filter %}checked{% endif %}>Усі</label>
+                            <label class="chip"><input type="radio" name="language" value="англ" {% if language_filter == 'англ' %}checked{% endif %}>Англійська</label>
+                            <label class="chip"><input type="radio" name="language" value="україн" {% if language_filter == 'україн' %}checked{% endif %}>Українська</label>
+                            <label class="chip"><input type="radio" name="language" value="поль" {% if language_filter == 'поль' %}checked{% endif %}>Польська</label>
+                            <label class="chip"><input type="radio" name="language" value="нім" {% if language_filter == 'нім' %}checked{% endif %}>Німецька</label>
+                            <label class="chip"><input type="radio" name="language" value="франц" {% if language_filter == 'франц' %}checked{% endif %}>Французька</label>
                         </div>
                     </div>
+
+                    <div class="filter-block">
+                        <p>Оберіть тип палітурки</p>
+                        <div class="chip-row">
+                        <label class="chip">
+                            <input type="radio" name="binding_filter" value="" {% if not binding_filter %}checked{% endif %}>Усі
+                        </label>
+                        <label class="chip">
+                            <input type="radio" name="binding_filter" value="hard" {% if binding_filter == 'hard' %}checked{% endif %}>Тверда
+                        </label>
+                        <label class="chip">
+                            <input type="radio" name="binding_filter" value="soft" {% if binding_filter == 'soft' %}checked{% endif %}>М’яка
+                        </label>
+                    </div>
+                </div>
 
                     <button class="results-btn" type="submit">Показати результати</button>
                 </section>

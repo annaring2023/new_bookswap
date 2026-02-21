@@ -48,13 +48,16 @@ def catalog(request):
     condition_filter = request.GET.get('condition_filter', '').strip()
     author_filter = request.GET.get('author_filter', '').strip()
     language_filter = request.GET.get('language_filter', '').strip()
+    binding_filter = request.GET.get('binding_filter', '').strip()
 
     listings = Listing.objects.select_related('owner').all()
+
     if query:
         if search_in_description:
             listings = listings.filter(Q(title__icontains=query) | Q(description__icontains=query))
         else:
             listings = listings.filter(title__icontains=query)
+
     if genre_filter:
         listings = listings.filter(genre__icontains=genre_filter)
     if condition_filter:
@@ -63,6 +66,8 @@ def catalog(request):
         listings = listings.filter(author__icontains=author_filter)
     if language_filter:
         listings = listings.filter(language__icontains=language_filter)
+    if binding_filter:
+        listings = listings.filter(binding_type=binding_filter)
 
     return render(request, 'catalog.html', {
         'listings': listings,
@@ -72,6 +77,7 @@ def catalog(request):
         'condition_filter': condition_filter,
         'author_filter': author_filter,
         'language_filter': language_filter,
+        'binding_filter': binding_filter, # Передаємо нове поле
     })
 
 
