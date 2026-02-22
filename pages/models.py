@@ -13,6 +13,11 @@ class Listing(models.Model):
         ('soft', 'М’яка'),
     ]
 
+    def is_favored_by(self, user):
+        if user.is_anonymous:
+            return False
+        return self.favored_by.filter(user=user).exists()
+
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='listings')
     title = models.CharField(max_length=150)
     author = models.CharField(max_length=150, blank=True)
@@ -85,3 +90,12 @@ class Message(models.Model):
 
     def __str__(self):
         return f'Message #{self.id} by {self.sender.username}'
+
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist_items')
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='favored_by')
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'listing')

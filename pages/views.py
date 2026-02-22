@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from .models import Listing, UserProfile
+from .models import Listing, UserProfile, Wishlist
 
 FAVORITE_GENRE_CHOICES = [
     ('fantasy', 'Фентезі'),
@@ -53,6 +53,10 @@ def catalog(request):
 
     listings = Listing.objects.select_related('owner').all()
 
+    wishlisted_ids = []
+    if request.user.is_authenticated:
+        wishlisted_ids = Wishlist.objects.filter(user=request.user).values_list('listing_id', flat=True)
+
     if query:
         if search_in_description:
             listings = listings.filter(Q(title__icontains=query) | Q(description__icontains=query))
@@ -82,6 +86,7 @@ def catalog(request):
         'language_filter': language_filter,
         'binding_filter': binding_filter,
         'pages_filter': pages_filter,
+        'wishlisted_ids': wishlisted_ids,
     })
 
 
@@ -91,6 +96,8 @@ def listing_detail(request, listing_id):
         return redirect('home')
 
     listing = get_object_or_404(Listing.objects.select_related('owner'), id=listing_id)
+    is_in_wishlist = Wishlist.objects.filter(user=request.user, listing=listing).exists()
+
     if listing.owner_id == request.user.id:
         messages.info(request, 'Це ваше оголошення. Редагуйте його у профілі.')
         return redirect('profile')
@@ -99,6 +106,7 @@ def listing_detail(request, listing_id):
     return render(request, 'listing_detail.html', {
         'listing': listing,
         'owner_profile': owner_profile,
+        'is_in_wishlist': is_in_wishlist,
     })
 
 
@@ -130,10 +138,12 @@ def profile(request):
         return redirect('home')  # Якщо не зайшов - викидаємо на головну
     profile_data, _ = UserProfile.objects.get_or_create(user=request.user)
     my_listings = Listing.objects.filter(owner=request.user)
+    my_wishlist = Wishlist.objects.filter(user=request.user).select_related('listing')
     selected_genres = [g for g in profile_data.favorite_genres.split(',') if g]
     favorite_genres_display = [GENRE_LABELS[g] for g in selected_genres if g in GENRE_LABELS]
     return render(request, 'profile.html', {
         'my_listings': my_listings,
+        'my_wishlist': my_wishlist,
         'profile_data': profile_data,
         'genre_choices': FAVORITE_GENRE_CHOICES,
         'selected_genres': selected_genres,
@@ -304,3 +314,18 @@ def logout_user(request):
         logout(request)
         return redirect('home')
     return redirect('settings')
+
+def toggle_wishlist(request, listing_id):
+    if not request.user.is_authenticated:
+        return redirect('home')
+
+    listing = get_object_or_404(Listing, id=listing_id)
+    wish_item, created = Wishlist.objects.get_or_create(user=request.user, listing=listing)
+
+    if not created:
+        wish_item.delete()
+        messages.info(request, f"Книгу '{listing.title}' видалено зі списку бажань")
+    else:
+        messages.success(request, f"Книгу '{listing.title}' додано у список бажань")
+
+    return redirect('listing_detail', listing_id=listing_id)

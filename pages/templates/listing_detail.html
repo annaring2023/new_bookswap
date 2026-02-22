@@ -32,10 +32,14 @@
                     <p><b>Палітурка:</b> {{ listing.get_binding_type_display|default:"не вказано" }}</p>
                 </div>
 
-                <div class="card owner">
-                    <p><b>Додав:</b> {{ listing.owner.username }}</p>
-                    <p>{{ owner_profile.city|default:"Місто не вказано" }}</p>
-                    <p><a href="{% url 'user_profile' listing.owner.id %}">Профіль користувача</a></p>
+                <div class="card wishlist-action" style="text-align: center; padding: 15px;">
+                    <a href="{% url 'toggle_wishlist' listing.id %}" style="text-decoration: none; font-size: 24px;">
+                        {% if is_in_wishlist %}
+                            <span style="color: #ff4d4d;">❤️ В обраному</span>
+                        {% else %}
+                            <span style="color: #888;">🤍 Додати в обране</span>
+                        {% endif %}
+                    </a>
                 </div>
             </section>
 

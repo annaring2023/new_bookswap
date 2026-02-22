@@ -109,10 +109,21 @@
                                     <span class="post-user">@{{ listing.owner.username }}</span>
                                     <span class="post-dot">•••</span>
                                 </div>
+
                                 <div class="book-cover {% cycle 'cover-1' 'cover-2' 'cover-3' 'cover-4' 'cover-5' 'cover-6' 'cover-7' 'cover-8' %}"
-                                     {% if listing.image %}style="background-image: linear-gradient(0deg, rgba(0,0,0,.20), rgba(0,0,0,.20)), url('{{ listing.image.url }}');"{% elif listing.image_url %}style="background-image: linear-gradient(0deg, rgba(0,0,0,.20), rgba(0,0,0,.20)), url('{{ listing.image_url }}');"{% endif %}>
+                                    style="position: relative; {% if listing.image %}background-image: linear-gradient(0deg, rgba(0,0,0,.20), rgba(0,0,0,.20)), url('{{ listing.image.url }}');{% elif listing.image_url %}background-image: linear-gradient(0deg, rgba(0,0,0,.20), rgba(0,0,0,.20)), url('{{ listing.image_url }}');{% endif %}">
+
+                                    <div style="position: absolute; top: 10px; right: 10px; font-size: 20px; text-shadow: 0 0 5px rgba(0,0,0,0.5); z-index: 5;">
+                                        {% if listing.id in wishlisted_ids %}
+                                            ❤️
+                                        {% else %}
+                                            <span style="opacity: 0.5;">🤍</span>
+                                        {% endif %}
+                                    </div>
+
                                     <span class="title-chip">{{ listing.title }}</span>
                                 </div>
+
                                 <p class="card-description">{{ listing.description|truncatechars:130 }}</p>
                                 <div class="post-meta">
                                     <span>{{ listing.created_at|date:"d.m.Y" }}</span>

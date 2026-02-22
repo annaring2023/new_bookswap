@@ -395,6 +395,29 @@
                 </form>
             </div>
 
+            <h2 style="margin: 30px 0 20px; color: #6C5DD3; font-weight: 700;">Мій Wishlist ✨</h2>
+
+            {% for item in my_wishlist %}
+                <div class="post-card" style="border-left: 5px solid #FFB1B1;">
+                    <div class="book-content">
+                        <img src="{% if item.listing.image %}{{ item.listing.image.url }}{% elif item.listing.image_url %}{{ item.listing.image_url }}{% else %}https://via.placeholder.com/80x110{% endif %}" class="book-cover-placeholder" style="width: 70px; height: 100px;">
+                        <div>
+                            <div class="post-title">
+                                <a href="{% url 'listing_detail' item.listing.id %}" style="text-decoration: none; color: #333;">
+                                    {{ item.listing.title }}
+                                </a>
+                            </div>
+                            <p class="post-meta">Власник: @{{ item.listing.owner.username }}</p>
+                            <a href="{% url 'toggle_wishlist' item.listing.id %}" class="delete-btn" style="font-size: 12px; background: #ffe4e4; text-decoration: none; display: inline-block;">
+                                Видалити з обраного
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p style="color: #666; font-style: italic;">Ви ще не додали жодної книги в обране.</p>
+            {% endfor %}
+
             {% for listing in my_listings %}
                 <div class="post-card">
                     <div class="post-header">
