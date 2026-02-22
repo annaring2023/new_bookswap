@@ -49,6 +49,7 @@ def catalog(request):
     author_filter = request.GET.get('author_filter', '').strip()
     language_filter = request.GET.get('language_filter', '').strip()
     binding_filter = request.GET.get('binding_filter', '').strip()
+    pages_filter = request.GET.get('pages_filter', '').strip()
 
     listings = Listing.objects.select_related('owner').all()
 
@@ -68,6 +69,8 @@ def catalog(request):
         listings = listings.filter(language__icontains=language_filter)
     if binding_filter:
         listings = listings.filter(binding_type=binding_filter)
+    if pages_filter and pages_filter.isdigit():
+        listings = listings.filter(pages__lte=int(pages_filter))
 
     return render(request, 'catalog.html', {
         'listings': listings,
@@ -77,7 +80,8 @@ def catalog(request):
         'condition_filter': condition_filter,
         'author_filter': author_filter,
         'language_filter': language_filter,
-        'binding_filter': binding_filter, # Передаємо нове поле
+        'binding_filter': binding_filter,
+        'pages_filter': pages_filter,
     })
 
 
@@ -190,6 +194,7 @@ def create_listing(request):
         description = request.POST.get('description', '').strip()
         image_url = request.POST.get('image_url', '').strip()
         image_file = request.FILES.get('image')
+        binding_type = request.POST.get('binding_type', '').strip()
 
         if not title or not description:
             messages.error(request, 'Заповніть назву та опис оголошення')
@@ -208,6 +213,7 @@ def create_listing(request):
             description=description,
             image=image_file,
             image_url=image_url,
+            binding_type=binding_type,
         )
         messages.success(request, 'Оголошення додано в каталог')
     return redirect('profile')

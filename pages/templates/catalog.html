@@ -88,6 +88,10 @@
                             <input type="radio" name="binding_filter" value="soft" {% if binding_filter == 'soft' %}checked{% endif %}>М’яка
                         </label>
                     </div>
+                    <div class="filter-block">
+                        <p>Кількість сторінок (до)</p>
+                            <input class="author-input" type="number" name="pages_filter" value="{{ pages_filter }}" placeholder="Наприклад: 400">
+                    </div>
                 </div>
 
                     <button class="results-btn" type="submit">Показати результати</button>

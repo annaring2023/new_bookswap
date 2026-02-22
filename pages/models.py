@@ -8,6 +8,10 @@ class Listing(models.Model):
         ('average', 'Середній стан'),
         ('poor', 'Поганий стан'),
     ]
+    BINDING_CHOICES = [
+        ('hard', 'Тверда'),
+        ('soft', 'М’яка'),
+    ]
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='listings')
     title = models.CharField(max_length=150)
@@ -16,12 +20,19 @@ class Listing(models.Model):
     language = models.CharField(max_length=60, blank=True)
     pages = models.PositiveIntegerField(null=True, blank=True)
     genre = models.CharField(max_length=120, blank=True)
-    condition = models.CharField(max_length=20, choices=CONDITION_CHOICES, blank=True)
+    condition = models.CharField(max_length=20,
+        choices=CONDITION_CHOICES,
+        blank=True)
     hashtags = models.CharField(max_length=255, blank=True)
     description = models.TextField()
     image = models.FileField(upload_to='listing_images/', blank=True, null=True)
     image_url = models.URLField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    binding_type = models.CharField(max_length=10,
+        choices=BINDING_CHOICES,
+        blank=True,
+        null=True,
+        verbose_name="Тип палітурки")
 
     class Meta:
         ordering = ['-created_at']
