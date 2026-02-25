@@ -44,10 +44,10 @@ def catalog(request):
 
     query = request.GET.get('q', '').strip()
     search_in_description = request.GET.get('desc') == '1'
-    genre_filter = request.GET.get('genre_filter', '').strip()
+    genre_filter = request.GET.get('genre', '').strip()
     condition_filter = request.GET.get('condition_filter', '').strip()
-    author_filter = request.GET.get('author_filter', '').strip()
-    language_filter = request.GET.get('language_filter', '').strip()
+    author_filter = request.GET.get('author', '').strip()
+    language_filter = request.GET.get('language', '').strip()
     binding_filter = request.GET.get('binding_filter', '').strip()
     pages_filter = request.GET.get('pages_filter', '').strip()
 
@@ -80,10 +80,10 @@ def catalog(request):
         'listings': listings,
         'query': query,
         'search_in_description': search_in_description,
-        'genre_filter': genre_filter,
+        'genre': genre_filter,
         'condition_filter': condition_filter,
-        'author_filter': author_filter,
-        'language_filter': language_filter,
+        'author': author_filter,
+        'language': language_filter,
         'binding_filter': binding_filter,
         'pages_filter': pages_filter,
         'wishlisted_ids': wishlisted_ids,
@@ -322,10 +322,5 @@ def toggle_wishlist(request, listing_id):
     listing = get_object_or_404(Listing, id=listing_id)
     wish_item, created = Wishlist.objects.get_or_create(user=request.user, listing=listing)
 
-    if not created:
-        wish_item.delete()
-        messages.info(request, f"Книгу '{listing.title}' видалено зі списку бажань")
-    else:
-        messages.success(request, f"Книгу '{listing.title}' додано у список бажань")
 
     return redirect('listing_detail', listing_id=listing_id)
