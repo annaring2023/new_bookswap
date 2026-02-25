@@ -41,6 +41,12 @@
                         {% endif %}
                     </a>
                 </div>
+
+                <div class="card owner">
+                    <p><b>Додав:</b> {{ listing.owner.username }}</p>
+                    <p>{{ owner_profile.city|default:"Місто не вказано" }}</p>
+                    <p><a href="{% url 'user_profile' listing.owner.id %}">Профіль користувача</a></p>
+                </div>
             </section>
 
             <section class="center">
@@ -53,7 +59,24 @@
                         <div class="fallback">{{ listing.title }}</div>
                     {% endif %}
                 </div>
+
                 <div class="stars">★ ★ ★ ★ ★</div>
+
+                {% if request.user.is_authenticated and request.user != listing.owner %}
+                    <form action="{% url 'request_exchange' listing.id %}" method="post" style="margin-top: 16px;">
+                        {% csrf_token %}
+                        <button class="btn btn-main" type="submit">Request exchange</button>
+                    </form>
+
+                    <a class="btn link-btn" href="{% url 'start_conversation' listing.id %}" style="display: inline-block; margin-top: 10px;">
+                        Message owner
+                    </a>
+                {% elif not request.user.is_authenticated %}
+                    <p style="margin-top: 12px;">
+                        Щоб написати власнику або зробити запит на обмін —
+                        <a href="{% url 'login_user' %}">увійдіть</a>.
+                    </p>
+                {% endif %}
             </section>
 
             <section class="right">

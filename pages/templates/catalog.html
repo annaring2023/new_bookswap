@@ -14,7 +14,9 @@
             <h1 class="brand">BookSwap</h1>
             <nav class="top-actions" aria-label="Швидкі дії">
                 <a href="{% url 'settings' %}" class="icon-link" aria-label="Налаштування">⚙</a>
-                <a href="#" class="icon-link" aria-label="Повідомлення">✉</a>
+                <a href="{% url 'messages_inbox' %}" class="icon-link icon-with-badge" aria-label="Повідомлення">
+                    ✉{% if unread_count %}<span class="badge">{{ unread_count }}</span>{% endif %}
+                </a>
                 <a href="{% url 'profile' %}" class="icon-link icon-solid" aria-label="Додати">+</a>
                 <a href="{% url 'profile' %}" class="icon-link icon-solid icon-avatar" aria-label="Профіль">👤</a>
             </nav>

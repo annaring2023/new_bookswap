@@ -91,6 +91,7 @@
         .thread.active { border: 2px solid #b196d8; }
         .thread h4 { margin: 0 0 4px; }
         .thread p { margin: 0; color: #666; font-size: .9rem; }
+
         .messages {
             display: flex;
             flex-direction: column;
@@ -116,6 +117,7 @@
             margin-top: 6px;
         }
         .msg.me .meta { color: #ffe8ec; }
+
         .composer {
             margin-top: 10px;
             display: flex;
@@ -137,13 +139,21 @@
             font-weight: 700;
             cursor: pointer;
         }
-        .chat-head {
+
+        /* ===== Report button + modal ===== */
+        .chat-head-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .chat-head-left {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 8px;
+            min-width: 0;
         }
-        .chat-head img,
+
         .chat-head-fallback {
             width: 40px;
             height: 40px;
@@ -156,9 +166,112 @@
             font-weight: 700;
             flex-shrink: 0;
         }
+
+        .report-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 700;
+            color: #6b5a7a;
+            padding: 6px 8px;
+            border-radius: 10px;
+        }
+        .report-btn:hover {
+            background: rgba(255,255,255,0.55);
+        }
+        .report-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            display: grid;
+            place-items: center;
+            border: 2px solid #6b5a7a;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .report-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.25);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .report-overlay.open { display: flex; }
+
+        .report-modal {
+            width: 380px;     /* ~10cm */
+            height: 380px;    /* ~10cm */
+            background: #fff;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.25);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+        }
+        .report-modal h4 { margin: 0; font-size: 16px; }
+
+        .report-x {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1;
+            color: #6b5a7a;
+        }
+
+        .report-modal textarea {
+            width: 100%;
+            flex: 1;
+            resize: none;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .report-actions button {
+            border: none;
+            border-radius: 999px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .report-cancel { background: #eee; }
+        .report-send { background: #e7a6b0; color: #fff; }
+
+        .report-success {
+            display: none;
+            padding: 10px;
+            border-radius: 12px;
+            background: #f1f7f1;
+            border: 1px solid #cfe8cf;
+            color: #2f6b2f;
+            font-size: 14px;
+        }
+        .report-success.show { display: block; }
+
         @media (max-width: 900px) {
             .layout { grid-template-columns: 1fr; }
             .messages { max-height: 46vh; }
+            .report-modal { width: 92vw; height: 60vh; }
         }
     </style>
 </head>
@@ -196,20 +309,37 @@
 
             <section class="panel">
                 {% if selected %}
-                    <div class="chat-head">
-                        {% if selected_peer_avatar %}
-                            <img src="{{ selected_peer_avatar }}" alt="avatar">
-                        {% else %}
-                            <div class="chat-head-fallback">{{ selected_peer.username|slice:":1"|upper }}</div>
-                        {% endif %}
-                        <h3>Чат: {{ selected_peer.username }}</h3>
+
+                    <div class="chat-head-row">
+                        <div class="chat-head-left">
+                            {% if selected_peer_avatar %}
+                                <img src="{{ selected_peer_avatar }}" alt="avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;background:#ececec;">
+                            {% else %}
+                                <div class="chat-head-fallback">{{ selected_peer.username|slice:":1"|upper }}</div>
+                            {% endif %}
+                            <h3 style="margin:0;">Чат: {{ selected_peer.username }}</h3>
+                        </div>
+
+                        <button type="button" class="report-btn" id="openReportBtn" title="Report">
+                            <span class="report-icon">!</span>
+                            Report
+                        </button>
                     </div>
+
                     <p style="margin-top:0;color:#666;">Книга: {{ selected.listing.title }}</p>
+
                     <div class="messages">
                         {% for m in selected_messages %}
                             <div class="msg {% if m.sender_id == request.user.id %}me{% endif %}">
                                 <div>{{ m.text }}</div>
-                                <div class="meta">{{ m.sender.username }} • {{ m.created_at|date:"d.m H:i" }}</div>
+
+                                <!-- ✅ Time + (for my messages) read status -->
+                                <div class="meta">
+                                    {{ m.created_at|date:"d.m H:i" }}
+                                    {% if m.sender_id == request.user.id %}
+                                        • {% if m.is_read %}прочитано{% else %}непрочитано{% endif %}
+                                    {% endif %}
+                                </div>
                             </div>
                         {% empty %}
                             <p>Почніть переписку.</p>
@@ -221,11 +351,74 @@
                         <input type="text" name="text" placeholder="Напишіть повідомлення..." required>
                         <button type="submit">Надіслати</button>
                     </form>
+
+                    <!-- Report modal -->
+                    <div class="report-overlay" id="reportOverlay">
+                        <div class="report-modal">
+                            <button type="button" class="report-x" id="closeReportX" aria-label="Close">×</button>
+
+                            <h4>Report користувача @{{ selected_peer.username }}</h4>
+                            <div class="report-success" id="reportSuccess">Дякую! Ми отримали ваш репорт.</div>
+
+                            <textarea id="reportText" placeholder="Опиши, що сталося..."></textarea>
+
+                            <div class="report-actions">
+                                <button type="button" class="report-cancel" id="closeReportBtn">Скасувати</button>
+                                <button type="button" class="report-send" id="sendReportBtn">Надіслати</button>
+                            </div>
+                        </div>
+                    </div>
+
                 {% else %}
                     <h3>Оберіть переписку</h3>
                 {% endif %}
             </section>
         </div>
     </div>
+
+    {% if selected %}
+    <script>
+        const openReportBtn = document.getElementById('openReportBtn');
+        const reportOverlay = document.getElementById('reportOverlay');
+        const closeReportBtn = document.getElementById('closeReportBtn');
+        const closeReportX = document.getElementById('closeReportX');
+        const sendReportBtn = document.getElementById('sendReportBtn');
+        const reportText = document.getElementById('reportText');
+        const reportSuccess = document.getElementById('reportSuccess');
+
+        function openReport() {
+            reportOverlay.classList.add('open');
+            reportSuccess.classList.remove('show');
+            reportText.value = '';
+            reportText.focus();
+        }
+
+        function closeReport() {
+            reportOverlay.classList.remove('open');
+        }
+
+        if (openReportBtn) openReportBtn.addEventListener('click', openReport);
+        if (closeReportBtn) closeReportBtn.addEventListener('click', closeReport);
+        if (closeReportX) closeReportX.addEventListener('click', closeReport);
+
+        if (reportOverlay) {
+            reportOverlay.addEventListener('click', (e) => {
+                if (e.target === reportOverlay) closeReport();
+            });
+        }
+
+        // fake "send" (front only). later can connect to backend.
+        if (sendReportBtn) {
+            sendReportBtn.addEventListener('click', () => {
+                if (!reportText.value.trim()) {
+                    alert("Напиши причину репорту");
+                    return;
+                }
+                reportSuccess.classList.add('show');
+                setTimeout(closeReport, 900);
+            });
+        }
+    </script>
+    {% endif %}
 </body>
 </html>
