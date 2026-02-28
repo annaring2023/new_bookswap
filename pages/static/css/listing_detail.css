@@ -3,8 +3,12 @@
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(120deg, #d8b4d7 0%, #b893e8 100%);
-    color: #3e3448;
+    background:
+        radial-gradient(1100px 650px at 12% 8%, rgba(255, 255, 255, 0.14), transparent 58%),
+        radial-gradient(900px 580px at 86% 10%, rgba(173, 146, 233, 0.28), transparent 60%),
+        linear-gradient(155deg, #58448b 0%, #6a56a0 52%, #7a67b4 100%);
+    background-attachment: fixed;
+    color: #3f3b56;
 }
 
 .page {
@@ -24,6 +28,7 @@ body {
     color: #fff;
     font-size: clamp(2rem, 4vw, 4rem);
     font-weight: 800;
+    text-shadow: 0 8px 20px rgba(35, 23, 70, 0.45);
 }
 
 .actions {
@@ -36,23 +41,50 @@ body {
     width: 58px;
     height: 58px;
     border-radius: 50%;
-    border: 4px solid #fff;
-    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.96);
+    color: #6c5dd3;
     text-decoration: none;
-    font-size: 2rem;
+    font-size: 1.8rem;
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 20px rgba(108, 93, 211, 0.18);
+    transition: transform .15s ease, box-shadow .2s ease;
+}
+
+.round-icon {
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.round-icon svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.round:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(108, 93, 211, 0.26);
 }
 
 .back-btn {
     text-decoration: none;
-    color: #fff;
+    color: #4a5885;
     font-weight: 700;
     font-size: 1rem;
     padding: 10px 14px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid #dbe5fb;
 }
 
 .layout {
@@ -62,9 +94,11 @@ body {
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.75);
-    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 18px;
     padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 8px 20px rgba(95, 82, 160, 0.1);
 }
 
 .card h1 {
@@ -78,8 +112,41 @@ body {
     line-height: 1.4;
 }
 
+.flash-wrap {
+    margin-bottom: 12px;
+}
+
+.flash-msg {
+    margin: 0 0 8px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #eef2ff;
+    color: #4b4a79;
+    font-size: .95rem;
+}
+
 .owner {
     margin-top: 14px;
+}
+
+.wishlist-action {
+    margin-top: 24px;
+    text-align: center;
+    padding: 15px;
+}
+
+.wishlist-link {
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.wishlist-on {
+    color: #5f87bc;
+}
+
+.wishlist-off {
+    color: #888;
 }
 
 .center {
@@ -95,7 +162,7 @@ body {
 }
 
 .fallback {
-    background: linear-gradient(45deg, #bf6ac8, #ecb1d9);
+    background: linear-gradient(45deg, #6f97cc, #88add7);
     color: #fff;
     display: grid;
     place-items: center;
@@ -104,10 +171,75 @@ body {
 }
 
 .stars {
-    margin: 10px 0;
+    margin: 10px 0 4px;
+}
+
+.star-text {
     color: #ffd24f;
     font-size: 2rem;
     letter-spacing: 4px;
+}
+
+.rating-meta {
+    display: block;
+    margin-top: 4px;
+    color: #3f3b56;
+    font-size: .95rem;
+    font-weight: 700;
+}
+
+.review-form {
+    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.88);
+    border-radius: 14px;
+    padding: 12px;
+}
+
+.review-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #3f3b56;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.rating-picker {
+    direction: rtl;
+    display: inline-flex;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.rating-picker input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.rating-picker label {
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #cfc9eb;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transition: transform .14s ease, color .16s ease;
+}
+
+.rating-picker label:hover,
+.rating-picker label:hover ~ label,
+.rating-picker input:checked ~ label {
+    color: #ffd24f;
+}
+
+.rating-picker label:hover {
+    transform: translateY(-1px) scale(1.04);
+}
+
+.review-note {
+    margin: 0 0 8px;
+    font-size: .9rem;
+    color: #3f3b56;
 }
 
 .btn {
@@ -116,15 +248,38 @@ body {
     border-radius: 16px;
     padding: 14px 16px;
     margin-top: 10px;
-    font-size: 1.8rem;
+    font-size: 1.08rem;
     font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
     color: #fff;
-    background: #e6a6b0;
+    background: #6f97cc;
     cursor: pointer;
+    box-shadow: 0 10px 18px rgba(90, 126, 171, 0.3);
+    transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
 }
 
 .btn-main {
-    background: #ea9ba8;
+    background: #627fc5;
+}
+
+.btn-rate {
+    background: #6c5dd3;
+}
+
+.link-btn {
+    background: #627fc5;
+    box-shadow: 0 10px 18px rgba(90, 126, 171, 0.3);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 24px rgba(90, 126, 171, 0.4);
+    filter: brightness(1.03);
+}
+
+.link-btn:hover {
+    box-shadow: 0 14px 24px rgba(90, 126, 171, 0.4);
 }
 
 .review {
@@ -134,7 +289,8 @@ body {
 .tags {
     margin-top: 14px;
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.35rem;
+    color: #514b75;
 }
 
 .chat {
@@ -156,10 +312,10 @@ body {
 }
 
 .chat-input {
-    border: 2px solid #e1a9b2;
+    border: 2px solid #d5e3fb;
     border-radius: 999px;
     padding: 12px 16px;
-    color: #7a4e99;
+    color: #4a5885;
 }
 
 @media (max-width: 1080px) {

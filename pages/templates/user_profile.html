@@ -11,23 +11,36 @@
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(120deg, #d8b4d7 0%, #b893e8 100%);
-            color: #3e3448;
+            background:
+                radial-gradient(1100px 650px at 12% 8%, rgba(255, 255, 255, 0.14), transparent 58%),
+                radial-gradient(900px 580px at 86% 10%, rgba(173, 146, 233, 0.28), transparent 60%),
+                linear-gradient(155deg, #58448b 0%, #6a56a0 52%, #7a67b4 100%);
+            background-attachment: fixed;
+            color: #3f3b56;
         }
         .page { padding: 22px; min-height: 100vh; }
-        .top { display: flex; justify-content: space-between; align-items: center; }
-        .top a {
+        .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .brand-link {
             text-decoration: none;
             color: #fff;
             font-size: 2.2rem;
             font-weight: 800;
+            text-shadow: 0 8px 20px rgba(35, 23, 70, 0.45);
         }
         .back {
+            text-decoration: none;
             font-size: 1rem;
             font-weight: 700;
-            background: rgba(255,255,255,.2);
+            color: #4a5885;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid #dbe5fb;
             padding: 10px 14px;
             border-radius: 999px;
+            transition: transform .15s ease, box-shadow .2s ease;
+        }
+        .back:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 18px rgba(108, 93, 211, 0.18);
         }
         .grid {
             margin-top: 18px;
@@ -36,53 +49,95 @@
             gap: 18px;
         }
         .card {
-            background: rgba(255,255,255,.8);
-            border-radius: 16px;
-            padding: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 18px;
+            padding: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.88);
+            box-shadow: 0 10px 24px rgba(95, 82, 160, 0.12);
+        }
+        .card h2 {
+            margin: 0 0 10px;
+            color: #4d4680;
         }
         .avatar {
             width: 90px;
             height: 90px;
             border-radius: 50%;
             overflow: hidden;
-            background: #f3f3f3;
+            background: #eef1ff;
             display: grid;
             place-items: center;
             font-size: 2rem;
             margin-bottom: 10px;
+            border: 1px solid #dde3fb;
         }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .owner-meta {
+            margin: 8px 0 0;
+            color: #4e486d;
+            line-height: 1.5;
+            font-size: .95rem;
+        }
+        .owner-meta b {
+            color: #4c4782;
+        }
         .listings {
             display: grid;
-            grid-template-columns: repeat(2, minmax(180px, 1fr));
-            gap: 14px;
+            grid-template-columns: repeat(2, minmax(210px, 280px));
+            justify-content: start;
+            gap: 12px;
         }
         .item {
             background: #fff;
-            border-radius: 14px;
-            padding: 10px;
+            border-radius: 16px;
+            padding: 12px;
             text-decoration: none;
             color: inherit;
+            border: 1px solid #ece8f9;
+            box-shadow: 0 8px 18px rgba(108, 93, 211, 0.1);
+            transition: transform .14s ease, box-shadow .2s ease, border-color .2s ease;
+            width: 100%;
+        }
+        .item:hover {
+            transform: translateY(-2px);
+            border-color: #d9d1f5;
+            box-shadow: 0 12px 22px rgba(108, 93, 211, 0.16);
         }
         .item img {
             width: 100%;
             height: 180px;
             object-fit: cover;
-            border-radius: 10px;
+            border-radius: 12px;
             background: #ececec;
+            border: 1px solid #eee9fb;
         }
-        .item h3 { margin: 10px 0 6px; font-size: 1rem; }
-        .item p { margin: 0; color: #666; font-size: .9rem; }
+        .item h3 {
+            margin: 10px 0 6px;
+            font-size: 1rem;
+            color: #4c4782;
+        }
+        .item p {
+            margin: 0;
+            color: #575273;
+            font-size: .9rem;
+            line-height: 1.4;
+        }
+        .empty {
+            color: #676286;
+            margin: 6px 2px;
+        }
         @media (max-width: 900px) {
             .grid { grid-template-columns: 1fr; }
             .listings { grid-template-columns: 1fr; }
+            .page { padding: 16px; }
+            .brand-link { font-size: 1.9rem; }
         }
     </style>
 </head>
 <body>
     <div class="page">
         <div class="top">
-            <a href="{% url 'catalog' %}">BookSwap</a>
+            <a href="{% url 'catalog' %}" class="brand-link">BookSwap</a>
             <a class="back" href="{% url 'catalog' %}">Назад у каталог</a>
         </div>
 
@@ -92,14 +147,17 @@
                     {% if owner_profile and owner_profile.avatar %}
                         <img src="{{ owner_profile.avatar.url }}" alt="avatar">
                     {% else %}
-                        👤
+                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#6c5dd3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/>
+                            <path d="M5 20a7 7 0 0 1 14 0"/>
+                        </svg>
                     {% endif %}
                 </div>
                 <h2>{{ owner.username }}</h2>
-                <p>Місто: {% if owner_profile %}{{ owner_profile.city|default:"-" }}{% else %}-{% endif %}</p>
-                <p>Вік: {% if owner_profile %}{{ owner_profile.age|default:"-" }}{% else %}-{% endif %}</p>
-                <p>Стать: {% if owner_profile %}{{ owner_profile.get_gender_display|default:"-" }}{% else %}-{% endif %}</p>
-                <p>Жанри: {% if owner_genres_display %}{{ owner_genres_display|join:", " }}{% else %}-{% endif %}</p>
+                <p class="owner-meta"><b>Місто:</b> {% if owner_profile %}{{ owner_profile.city|default:"-" }}{% else %}-{% endif %}</p>
+                <p class="owner-meta"><b>Вік:</b> {% if owner_profile %}{{ owner_profile.age|default:"-" }}{% else %}-{% endif %}</p>
+                <p class="owner-meta"><b>Стать:</b> {% if owner_profile %}{{ owner_profile.get_gender_display|default:"-" }}{% else %}-{% endif %}</p>
+                <p class="owner-meta"><b>Жанри:</b> {% if owner_genres_display %}{{ owner_genres_display|join:", " }}{% else %}-{% endif %}</p>
             </aside>
 
             <section class="card">
@@ -118,7 +176,7 @@
                             <p>{{ listing.description|truncatechars:70 }}</p>
                         </a>
                     {% empty %}
-                        <p>Поки немає оголошень.</p>
+                        <p class="empty">Поки немає оголошень.</p>
                     {% endfor %}
                 </div>
             </section>

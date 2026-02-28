@@ -7,7 +7,7 @@
 
 body {
     height: 100vh;
-    background: linear-gradient(135deg, #c3a6f1 0%, #f9d1d1 100%);
+    background: #b49be4;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -91,6 +91,9 @@ h1 {
     border-radius: 25px;
     text-align: center;
     color: #333;
+    min-height: 430px;
+    display: flex;
+    flex-direction: column;
 }
 
 .toggle-buttons {
@@ -98,15 +101,21 @@ h1 {
     border-radius: 20px;
     display: flex;
     margin-bottom: 20px;
+    overflow: hidden;
 }
 
 .toggle-buttons button {
     flex: 1;
-    padding: 10px;
+    min-width: 0;
+    height: 42px;
     border: none;
-    border-radius: 20px;
+    border-radius: 0;
     cursor: pointer;
     font-size: 14px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-create.active {
@@ -120,6 +129,15 @@ h1 {
 .form-card h2 {
     color: #a6a6a6;
     margin-bottom: 20px;
+}
+
+.form-card form {
+    flex: 1;
+}
+
+.footer-text {
+    margin-top: auto;
+    min-height: 18px;
 }
 
 input {
@@ -199,14 +217,19 @@ input {
 
 .btn-toggle {
     flex: 1;
-    padding: 10px;
+    min-width: 0;
+    height: 42px;
     border: none;
-    border-radius: 20px;
+    border-radius: 0;
     cursor: pointer;
     font-size: 14px;
     background: transparent;
     color: #888;
     transition: 0.3s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-toggle.active {

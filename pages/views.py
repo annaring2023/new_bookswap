@@ -4,12 +4,12 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from django.contrib import messages
+from django.db.models import Avg
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from .models import Report
 from .models import Listing, UserProfile, Conversation, Message
-from .models import Listing, UserProfile, Wishlist
+from .models import Listing, UserProfile, Wishlist, ListingReview
 
 FAVORITE_GENRE_CHOICES = [
     ('fantasy', 'Фентезі'),
@@ -115,6 +115,7 @@ def catalog(request):
         'binding_filter': binding_filter,
         'pages_filter': pages_filter,
         'wishlisted_ids': wishlisted_ids,
+        'unread_count': _unread_messages_count(request.user),
     })
 
 
@@ -131,11 +132,50 @@ def listing_detail(request, listing_id):
         return redirect('profile')
 
     owner_profile = UserProfile.objects.filter(user=listing.owner).first()
+    review_aggregate = listing.reviews.aggregate(avg=Avg('stars'))
+    average_rating = round(review_aggregate['avg'], 1) if review_aggregate['avg'] else 0
+    reviews_count = listing.reviews.count()
+    user_review = ListingReview.objects.filter(listing=listing, reviewer=request.user).first()
+    filled_stars = int(round(average_rating)) if average_rating else 0
     return render(request, 'listing_detail.html', {
         'listing': listing,
         'owner_profile': owner_profile,
         'is_in_wishlist': is_in_wishlist,
+        'average_rating': average_rating,
+        'reviews_count': reviews_count,
+        'filled_stars': filled_stars,
+        'user_review': user_review,
     })
+
+
+@require_POST
+def submit_listing_review(request, listing_id):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Спочатку увійдіть в акаунт')
+        return redirect('home')
+
+    listing = get_object_or_404(Listing, id=listing_id)
+    if listing.owner_id == request.user.id:
+        messages.error(request, 'Ви не можете оцінювати власну книгу')
+        return redirect('listing_detail', listing_id=listing_id)
+
+    stars_raw = request.POST.get('stars', '').strip()
+    if not stars_raw.isdigit():
+        messages.error(request, 'Оберіть кількість зірок від 1 до 5')
+        return redirect('listing_detail', listing_id=listing_id)
+
+    stars = int(stars_raw)
+    if stars < 1 or stars > 5:
+        messages.error(request, 'Оцінка має бути від 1 до 5')
+        return redirect('listing_detail', listing_id=listing_id)
+
+    ListingReview.objects.update_or_create(
+        listing=listing,
+        reviewer=request.user,
+        defaults={'stars': stars},
+    )
+    messages.success(request, 'Відгук збережено')
+    return redirect('listing_detail', listing_id=listing_id)
 
 
 def start_conversation(request, listing_id):
@@ -283,9 +323,11 @@ def user_profile_view(request, user_id):
 def profile(request):
     if not request.user.is_authenticated:
         return redirect('home')  # Якщо не зайшов - викидаємо на головну
+
     profile_data, _ = UserProfile.objects.get_or_create(user=request.user)
     my_listings = Listing.objects.filter(owner=request.user)
     my_wishlist = Wishlist.objects.filter(user=request.user).select_related('listing')
+
     selected_genres = [g for g in profile_data.favorite_genres.split(',') if g]
     favorite_genres_display = [GENRE_LABELS[g] for g in selected_genres if g in GENRE_LABELS]
     return render(request, 'profile.html', {
@@ -295,6 +337,7 @@ def profile(request):
         'genre_choices': FAVORITE_GENRE_CHOICES,
         'selected_genres': selected_genres,
         'favorite_genres_display': favorite_genres_display,
+        'unread_count': _unread_messages_count(request.user),
     })
 
 # Логіка реєстрації
@@ -493,6 +536,7 @@ def toggle_wishlist(request, listing_id):
 
     listing = get_object_or_404(Listing, id=listing_id)
     wish_item, created = Wishlist.objects.get_or_create(user=request.user, listing=listing)
-
+    if not created:
+        wish_item.delete()
 
     return redirect('listing_detail', listing_id=listing_id)

@@ -14,13 +14,29 @@
             <a href="{% url 'catalog' %}" class="brand">BookSwap</a>
             <div class="actions">
                 <a href="{% url 'catalog' %}" class="back-btn">← Каталог</a>
-                <a href="{% url 'profile' %}" class="round">👤</a>
-                <a href="{% url 'settings' %}" class="round">⚙</a>
+                <a href="{% url 'profile' %}" class="round" aria-label="Профіль">
+                    <span class="round-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0"/></svg>
+                    </span>
+                </a>
+                <a href="{% url 'settings' %}" class="round" aria-label="Налаштування">
+                    <span class="round-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M10.6 2.3h2.8l.5 2.1a7.8 7.8 0 0 1 1.9.8l1.9-1.1 2 2-1.1 1.9c.3.6.6 1.2.8 1.9l2.1.5v2.8l-2.1.5a7.8 7.8 0 0 1-.8 1.9l1.1 1.9-2 2-1.9-1.1a7.8 7.8 0 0 1-1.9.8l-.5 2.1h-2.8l-.5-2.1a7.8 7.8 0 0 1-1.9-.8L6.9 20l-2-2 1.1-1.9a7.8 7.8 0 0 1-.8-1.9L3 13.7v-2.8l2.1-.5c.2-.7.5-1.3.8-1.9L4.9 6.6l2-2 1.9 1.1c.6-.3 1.2-.6 1.9-.8l.5-2.1ZM12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Z"/></svg>
+                    </span>
+                </a>
             </div>
         </header>
 
         <main class="layout">
             <section class="left">
+                {% if messages %}
+                    <div class="card flash-wrap">
+                        {% for message in messages %}
+                            <p class="flash-msg">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
                 <div class="card">
                     <h1>{{ listing.title }}</h1>
                     <p><b>Автор:</b> {{ listing.author|default:"не вказано" }}</p>
@@ -32,20 +48,20 @@
                     <p><b>Палітурка:</b> {{ listing.get_binding_type_display|default:"не вказано" }}</p>
                 </div>
 
-                <div class="card wishlist-action" style="text-align: center; padding: 15px;">
-                    <a href="{% url 'toggle_wishlist' listing.id %}" style="text-decoration: none; font-size: 24px;">
-                        {% if is_in_wishlist %}
-                            <span style="color: #ff4d4d;">❤️ В обраному</span>
-                        {% else %}
-                            <span style="color: #888;">🤍 Додати в обране</span>
-                        {% endif %}
-                    </a>
-                </div>
-
                 <div class="card owner">
                     <p><b>Додав:</b> {{ listing.owner.username }}</p>
                     <p>{{ owner_profile.city|default:"Місто не вказано" }}</p>
                     <p><a href="{% url 'user_profile' listing.owner.id %}">Профіль користувача</a></p>
+                </div>
+
+                <div class="card wishlist-action">
+                    <a href="{% url 'toggle_wishlist' listing.id %}" class="wishlist-link">
+                        {% if is_in_wishlist %}
+                            <span class="wishlist-on">❤️ В обраному</span>
+                        {% else %}
+                            <span class="wishlist-off">🤍 Додати в обране</span>
+                        {% endif %}
+                    </a>
                 </div>
             </section>
 
@@ -60,9 +76,37 @@
                     {% endif %}
                 </div>
 
-                <div class="stars">★ ★ ★ ★ ★</div>
+                <div class="stars">
+                    <span class="star-text">
+                        {% for _ in "12345" %}
+                            {% if forloop.counter <= filled_stars %}★{% else %}☆{% endif %}
+                        {% endfor %}
+                    </span>
+                    <span class="rating-meta">{{ average_rating }}/5 · {{ reviews_count }} оцінок</span>
+                </div>
 
                 {% if request.user.is_authenticated and request.user != listing.owner %}
+                    <form action="{% url 'submit_listing_review' listing.id %}" method="post" class="review-form">
+                        {% csrf_token %}
+                        <label class="review-label">Оцініть книгу:</label>
+                        <div class="rating-picker" role="radiogroup" aria-label="Оцінка книги">
+                            <input type="radio" id="rate5" name="stars" value="5" {% if user_review and user_review.stars == 5 %}checked{% endif %} required>
+                            <label for="rate5" title="5 зірок">★</label>
+                            <input type="radio" id="rate4" name="stars" value="4" {% if user_review and user_review.stars == 4 %}checked{% endif %}>
+                            <label for="rate4" title="4 зірки">★</label>
+                            <input type="radio" id="rate3" name="stars" value="3" {% if user_review and user_review.stars == 3 %}checked{% endif %}>
+                            <label for="rate3" title="3 зірки">★</label>
+                            <input type="radio" id="rate2" name="stars" value="2" {% if user_review and user_review.stars == 2 %}checked{% endif %}>
+                            <label for="rate2" title="2 зірки">★</label>
+                            <input type="radio" id="rate1" name="stars" value="1" {% if user_review and user_review.stars == 1 %}checked{% endif %}>
+                            <label for="rate1" title="1 зірка">★</label>
+                        </div>
+                        {% if user_review %}
+                            <p class="review-note">Ваша оцінка: {{ user_review.stars }}/5</p>
+                        {% endif %}
+                        <button class="btn btn-rate" type="submit">Залишити відгук</button>
+                    </form>
+
                     <form action="{% url 'request_exchange' listing.id %}" method="post" style="margin-top: 16px;">
                         {% csrf_token %}
                         <button class="btn btn-main" type="submit">Request exchange</button>

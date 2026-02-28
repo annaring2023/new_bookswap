@@ -13,28 +13,54 @@
         <header class="top-bar">
             <h1 class="brand">BookSwap</h1>
             <nav class="top-actions" aria-label="Швидкі дії">
-                <a href="{% url 'settings' %}" class="icon-link" aria-label="Налаштування">⚙</a>
-                <a href="{% url 'messages_inbox' %}" class="icon-link icon-with-badge" aria-label="Повідомлення">
-                    ✉{% if unread_count %}<span class="badge">{{ unread_count }}</span>{% endif %}
+                <a href="{% url 'settings' %}" class="icon-link" aria-label="Налаштування">
+                    <span class="m-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M10.6 2.3h2.8l.5 2.1a7.8 7.8 0 0 1 1.9.8l1.9-1.1 2 2-1.1 1.9c.3.6.6 1.2.8 1.9l2.1.5v2.8l-2.1.5a7.8 7.8 0 0 1-.8 1.9l1.1 1.9-2 2-1.9-1.1a7.8 7.8 0 0 1-1.9.8l-.5 2.1h-2.8l-.5-2.1a7.8 7.8 0 0 1-1.9-.8L6.9 20l-2-2 1.1-1.9a7.8 7.8 0 0 1-.8-1.9L3 13.7v-2.8l2.1-.5c.2-.7.5-1.3.8-1.9L4.9 6.6l2-2 1.9 1.1c.6-.3 1.2-.6 1.9-.8l.5-2.1ZM12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Z"/></svg>
+                    </span>
                 </a>
-                <a href="{% url 'profile' %}" class="icon-link icon-solid" aria-label="Додати">+</a>
-                <a href="{% url 'profile' %}" class="icon-link icon-solid icon-avatar" aria-label="Профіль">👤</a>
+                <a href="{% url 'messages_inbox' %}" class="icon-link icon-with-badge" aria-label="Повідомлення">
+                    <span class="m-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M3.5 6.5h17a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 16V8a1.5 1.5 0 0 1 1.5-1.5Zm0 1.7 8.5 5.8 8.5-5.8"/></svg>
+                    </span>{% if unread_count %}<span class="badge">{{ unread_count }}</span>{% endif %}
+                </a>
+                <a href="{% url 'profile' %}" class="icon-link icon-solid" aria-label="Додати">
+                    <span class="m-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                    </span>
+                </a>
+                <a href="{% url 'profile' %}" class="icon-link icon-solid icon-avatar" aria-label="Профіль">
+                    <span class="m-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0"/></svg>
+                    </span>
+                </a>
             </nav>
         </header>
 
         <section class="search-wrap">
             <form class="catalog-search-form" action="{% url 'catalog' %}" method="get">
                 <div class="search-box">
-                    <button class="filter-toggle {% if search_in_description %}active{% endif %}" id="filterToggle" type="button" aria-label="Фільтр по описах">☰</button>
+                    <button class="filter-toggle {% if search_in_description %}active{% endif %}" id="filterToggle" type="button" aria-label="Фільтр по описах">
+                        <span class="m-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 7h10M17 7h3M10 7a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm0 10h10M4 17h3m7 0a2 2 0 1 1 4 0 2 2 0 0 1-4 0Z"/></svg>
+                        </span>
+                    </button>
                     <input type="hidden" name="desc" id="descFilterInput" value="{% if search_in_description %}1{% else %}0{% endif %}">
                     <input type="search" name="q" value="{{ query }}" placeholder="Знайдіть свою книгу" aria-label="Пошук книг">
-                    <button class="search-submit" type="submit" aria-label="Пошук">⌕</button>
+                    <button class="search-submit" type="submit" aria-label="Пошук">
+                        <span class="m-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14Zm9 16-4.2-4.2"/></svg>
+                        </span>
+                    </button>
                 </div>
 
                 <section class="filter-panel" id="filterPanel">
                     <div class="panel-head">
                         <h3>Знайдіть свій збіг</h3>
-                        <button class="close-filter" id="closeFilter" type="button">×</button>
+                        <button class="close-filter" id="closeFilter" type="button">
+                            <span class="m-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+                            </span>
+                        </button>
                     </div>
 
                     <div class="filter-block">

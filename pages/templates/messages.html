@@ -11,31 +11,53 @@
             margin: 0;
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(120deg, #d8b4d7 0%, #b893e8 100%);
-            color: #3b3444;
+            background:
+                radial-gradient(1100px 650px at 12% 8%, rgba(255, 255, 255, 0.14), transparent 58%),
+                radial-gradient(900px 580px at 86% 10%, rgba(173, 146, 233, 0.28), transparent 60%),
+                linear-gradient(155deg, #58448b 0%, #6a56a0 52%, #7a67b4 100%);
+            background-attachment: fixed;
+            color: #3f3b56;
         }
-        .page { padding: 16px; }
+        .page { padding: 18px; }
         .top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
-        .top a {
+        .brand-link {
             text-decoration: none;
             color: #fff;
             font-size: 2rem;
             font-weight: 800;
+            text-shadow: 0 8px 20px rgba(35, 23, 70, 0.45);
+        }
+        .back-link {
+            text-decoration: none;
+            color: #4a5885;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid #dbe5fb;
+            background: rgba(255, 255, 255, 0.92);
+            transition: transform .15s ease, box-shadow .2s ease;
+        }
+        .back-link:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 18px rgba(108, 93, 211, 0.18);
         }
         .layout {
             display: grid;
             grid-template-columns: 320px 1fr;
-            gap: 12px;
+            gap: 14px;
         }
         .panel {
-            background: rgba(255, 255, 255, 0.82);
-            border-radius: 16px;
-            padding: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.88);
+            border-radius: 18px;
+            padding: 14px;
+            box-shadow: 0 10px 24px rgba(95, 82, 160, 0.12);
             overflow: auto;
         }
         .thread {
@@ -44,10 +66,17 @@
             align-items: center;
             text-decoration: none;
             color: inherit;
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 10px;
             margin-bottom: 8px;
             background: #fff;
+            border: 1px solid #ece8f9;
+            transition: transform .14s ease, box-shadow .2s ease, border-color .2s ease;
+        }
+        .thread:hover {
+            transform: translateY(-1px);
+            border-color: #d9d1f5;
+            box-shadow: 0 8px 18px rgba(108, 93, 211, 0.12);
         }
         .thread-avatar {
             width: 44px;
@@ -83,14 +112,17 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: #ef889b;
+            background: #6f97cc;
             color: #fff;
             font-size: 12px;
             font-weight: 700;
         }
-        .thread.active { border: 2px solid #b196d8; }
+        .thread.active {
+            border: 2px solid #8d80dd;
+            box-shadow: 0 10px 20px rgba(108, 93, 211, 0.16);
+        }
         .thread h4 { margin: 0 0 4px; }
-        .thread p { margin: 0; color: #666; font-size: .9rem; }
+        .thread p { margin: 0; color: #5e587a; font-size: .92rem; }
 
         .messages {
             display: flex;
@@ -103,20 +135,22 @@
         .msg {
             max-width: 70%;
             padding: 10px 12px;
-            border-radius: 12px;
-            background: #fff;
+            border-radius: 14px;
+            background: #f6f5fd;
+            border: 1px solid #ece8f9;
         }
         .msg.me {
             align-self: flex-end;
-            background: #efb8b1;
+            background: #627fc5;
             color: #fff;
+            border-color: transparent;
         }
         .msg .meta {
             font-size: .75rem;
-            color: #777;
+            color: #666088;
             margin-top: 6px;
         }
-        .msg.me .meta { color: #ffe8ec; }
+        .msg.me .meta { color: #e6efff; }
 
         .composer {
             margin-top: 10px;
@@ -125,19 +159,32 @@
         }
         .composer input {
             flex: 1;
-            border: 1px solid #d5d5d5;
+            border: 1px solid #d8d1f1;
             border-radius: 999px;
-            padding: 10px 14px;
+            padding: 11px 14px;
             font-size: 14px;
+            outline: none;
+            background: #fff;
+        }
+        .composer input:focus {
+            border-color: #9586dc;
+            box-shadow: 0 0 0 3px rgba(108, 93, 211, 0.17);
         }
         .composer button {
             border: none;
             border-radius: 999px;
-            padding: 10px 14px;
-            background: #e7a6b0;
+            padding: 11px 15px;
+            background: #627fc5;
             color: #fff;
             font-weight: 700;
             cursor: pointer;
+            box-shadow: 0 8px 16px rgba(90, 126, 171, 0.3);
+            transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+        }
+        .composer button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 20px rgba(90, 126, 171, 0.38);
+            filter: brightness(1.03);
         }
 
         /* ===== Report button + modal ===== */
@@ -175,12 +222,12 @@
             background: transparent;
             cursor: pointer;
             font-weight: 700;
-            color: #6b5a7a;
+            color: #5a5490;
             padding: 6px 8px;
             border-radius: 10px;
         }
         .report-btn:hover {
-            background: rgba(255,255,255,0.55);
+            background: #f1effc;
         }
         .report-icon {
             width: 26px;
@@ -188,7 +235,7 @@
             border-radius: 999px;
             display: grid;
             place-items: center;
-            border: 2px solid #6b5a7a;
+            border: 2px solid #5a5490;
             font-weight: 900;
             line-height: 1;
         }
@@ -210,7 +257,7 @@
             background: #fff;
             border-radius: 16px;
             padding: 14px;
-            box-shadow: 0 10px 30px rgba(0,0,0,.25);
+            box-shadow: 0 14px 34px rgba(72, 58, 131, .25);
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -227,7 +274,7 @@
             cursor: pointer;
             font-size: 20px;
             line-height: 1;
-            color: #6b5a7a;
+            color: #5a5490;
         }
 
         .report-modal textarea {
@@ -254,8 +301,8 @@
             cursor: pointer;
             font-weight: 700;
         }
-        .report-cancel { background: #eee; }
-        .report-send { background: #e7a6b0; color: #fff; }
+        .report-cancel { background: #ecf1ff; color: #4a5885; }
+        .report-send { background: #627fc5; color: #fff; }
 
         .report-success {
             display: none;
@@ -278,8 +325,8 @@
 <body>
     <div class="page">
         <div class="top">
-            <a href="{% url 'catalog' %}">BookSwap</a>
-            <a href="{% url 'catalog' %}">← Каталог</a>
+            <a href="{% url 'catalog' %}" class="brand-link">BookSwap</a>
+            <a href="{% url 'catalog' %}" class="back-link">← Каталог</a>
         </div>
 
         <div class="layout">

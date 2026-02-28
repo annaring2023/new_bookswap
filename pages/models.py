@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.db.models import Avg
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Listing(models.Model):
@@ -45,6 +47,15 @@ class Listing(models.Model):
 
     def __str__(self):
         return f'{self.title} ({self.owner.username})'
+
+    @property
+    def average_rating(self):
+        value = self.reviews.aggregate(avg=Avg('stars'))['avg']
+        return round(value, 1) if value else 0
+
+    @property
+    def reviews_count(self):
+        return self.reviews.count()
 
 
 class UserProfile(models.Model):
@@ -109,3 +120,19 @@ class Wishlist(models.Model):
 
     class Meta:
         unique_together = ('user', 'listing')
+
+
+class ListingReview(models.Model):
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='reviews')
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='listing_reviews')
+    stars = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('listing', 'reviewer')
+        ordering = ['-updated_at']
+
+    def __str__(self):
+        return f'Review {self.stars}/5 by {self.reviewer.username} for {self.listing.title}'
