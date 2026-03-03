@@ -229,7 +229,7 @@
             gap: 20px;
         }
         .catalog-link:hover {
-            transform: scale(1.05); 
+            transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(151, 179, 239, 0.4);
         }
         .book-cover-placeholder {
@@ -415,7 +415,7 @@
 <body>
 
     <nav class="navbar">
-        <div class="logo">BookSwap💜</div>
+        <div class="logo">BookSwap</div>
         <a class="catalog-link" href="{% url 'catalog' %}">Каталог</a>
     </nav>
 
@@ -501,10 +501,10 @@
                 <form class="post-create-form" action="{% url 'create_listing' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="text" name="title" placeholder="Назва книги" required>
-                    <input type="text" name="author" placeholder="Автор">
+                    <input type="text" name="author" placeholder="Автор" required>
                     <input type="number" name="publication_year" min="1000" max="2100" placeholder="Рік видання">
                       <div class="form-group">
-            <select name="language" id="language" class="form-control">
+            <select name="language" id="language" class="form-control" required>
                 <option value="" {% if not listing.language %}selected{% endif %}>Оберіть мову</option>
                 <option value="Українська" {% if listing.language == "Українська" %}selected{% endif %}>Українська</option>
                 <option value="Англійська" {% if listing.language == "Англійська" %}selected{% endif %}>Англійська</option>
@@ -514,7 +514,7 @@
                 <option value="Інша" {% if listing.language == "Інша" %}selected{% endif %}>Інша</option>
             </select>
         </div>
-                    <input type="number" name="pages" min="1" placeholder="Кількість сторінок">
+                    <input type="number" name="pages" min="1" placeholder="Кількість сторінок" required>
                      <div class="form-group">
             <select name="genre" id="genre" class="form-control">
                 <option value="" {% if not listing.genre %}selected{% endif %}>Усі жанри</option>

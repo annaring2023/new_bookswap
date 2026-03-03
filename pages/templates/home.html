@@ -7,7 +7,7 @@
     <title>BookSwap - Головна</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
+    <!-- <style>
         body { margin: 0; font-family: 'Inter', sans-serif; }
         a { text-decoration: none; }
 
@@ -52,12 +52,12 @@
         right: 15px;
     }
 }
-    </style>
+    </style> -->
 </head>
 <body data-auth-open="{% if auth_open %}true{% endif %}"
       data-auth-tab="{% if auth_tab %}{{ auth_tab }}{% endif %}">
     <header class="site-header">
-        <div class="brand">💜 BookSwap</div>
+        <div class="brand">BookSwap</div>
         <nav>
             <!-- <a href="{% url 'catalog' %}">Каталог</a> -->
             <a href="#">Про нас</a>
@@ -76,7 +76,7 @@
             <button class="close-modal" id="closeAuth">&times;</button>
 
             <div class="info-section">
-                <div class="logo">💜 BookSwap</div>
+                <div class="logo">BookSwap</div>
                 <h1>Обмінюйтеся книгами просто та з задоволенням.</h1>
                 <ul class="features">
                     <li><span>✔</span> Поринай у нові світи щодня</li>
@@ -105,7 +105,7 @@
                     <form action="{% url 'register' %}" method="POST">
                         {% csrf_token %}
                         <input type="text" name="username" placeholder="Ім'я користувача" required>
-                        <input type="email" name="email" placeholder="Електронна пошта" required>
+                        <input type="email" name="email" placeholder="Електронна пошта" required autocomplete="email">
                         <input type="password" name="password" placeholder="Пароль" required>
                         <button type="submit" class="submit-btn">Створити акаунт</button>
                     </form>

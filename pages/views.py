@@ -138,12 +138,23 @@ def catalog(request):
     wishlisted_ids = []
     if request.user.is_authenticated:
         wishlisted_ids = Wishlist.objects.filter(user=request.user).values_list('listing_id', flat=True)
-
     if query:
         if search_in_description:
-            listings = listings.filter(Q(title__icontains=query) | Q(description__icontains=query))
+            listings = listings.filter(
+                Q(title__icontains=query) |
+                Q(description__icontains=query) |
+                Q(author__icontains=query)  # Додайте автора в загальний пошук
+            )
         else:
-            listings = listings.filter(title__icontains=query)
+            listings = listings.filter(
+                Q(title__icontains=query) |
+                Q(author__icontains=query)
+            )
+    # if query:
+    #     if search_in_description:
+    #         listings = listings.filter(Q(title__icontains=query) | Q(description__icontains=query))
+    #     else:
+    #         listings = listings.filter(title__icontains=query)
 
     if genre_filter:
         listings = listings.filter(genre__icontains=genre_filter)

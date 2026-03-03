@@ -82,10 +82,10 @@
         <h1>Редагувати оголошення</h1>
         <div class="grid">
             <input type="text" name="title" value="{{ listing.title }}" placeholder="Назва книги" required>
-            <input type="text" name="author" value="{{ listing.author }}" placeholder="Автор">
+            <input type="text" name="author" value="{{ listing.author }}" placeholder="Автор" required>
             <input type="number" name="publication_year" min="1000" max="2100" value="{{ listing.publication_year|default:'' }}" placeholder="Рік видання">
             <div class="form-group">
-            <select name="language" id="language" class="form-control">
+            <select name="language" id="language" class="form-control" required>
                 <option value="" {% if not listing.language %}selected{% endif %}>Оберіть мову</option>
                 <option value="Українська" {% if listing.language == "Українська" %}selected{% endif %}>Українська</option>
                 <option value="Англійська" {% if listing.language == "Англійська" %}selected{% endif %}>Англійська</option>
@@ -95,7 +95,7 @@
                 <option value="Інша" {% if listing.language == "Інша" %}selected{% endif %}>Інша</option>
             </select>
         </div>
-            <input type="number" name="pages" min="1" value="{{ listing.pages|default:'' }}" placeholder="Кількість сторінок">
+            <input type="number" name="pages" min="1" value="{{ listing.pages|default:'' }}" placeholder="Кількість сторінок" required>
         <div class="form-group">
             <select name="genre" id="genre" class="form-control">
                 <option value="" {% if not listing.genre %}selected{% endif %}>Усі жанри</option>
