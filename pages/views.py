@@ -651,3 +651,6 @@ def toggle_wishlist(request, listing_id):
         wish_item.delete()
 
     return redirect('listing_detail', listing_id=listing_id)
+
+def about_page(request):
+    return render(request, 'about.html')
