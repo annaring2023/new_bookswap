@@ -7,13 +7,26 @@
 
 body {
     height: 100vh;
-    background: #b49be4;
+    background:
+        radial-gradient(1100px 650px at 12% 8%, rgba(255, 255, 255, 0.14), transparent 58%),
+        radial-gradient(900px 580px at 86% 10%, rgba(173, 146, 233, 0.28), transparent 60%),
+        linear-gradient(155deg, #58448b 0%, #6a56a0 52%, #7a67b4 100%);
+    background-attachment: fixed;
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
 }
-
+.error-msg {
+    background: #fff0f0;
+    color: #e35d5d;
+    padding: 8px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin-bottom: 15px;
+    border: 1px solid #ffdbdb;
+    text-align: center;
+}
 .main-container {
 
     display: flex;
@@ -30,7 +43,6 @@ body {
 }
 
 .info-section {
-
     flex: 1;
     padding-bottom: 80px;
     padding: 40px;
@@ -153,7 +165,7 @@ input {
 .submit-btn {
     width: 100%;
     padding: 12px;
-    background: #f3ada8;
+    background: #97b3ef;
     border: none;
     border-radius: 20px;
     color: white;
@@ -167,6 +179,8 @@ input {
     margin-top: 15px;
     color: #888;
 }
+
+
 
 .footer-text a { color: #a6a6a6; text-decoration: none; }
 
@@ -236,19 +250,19 @@ input {
     background: white;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     font-weight: bold;
-    color: #333;
+    color: #888;
 }
 
 .content-under {
     text-align: center;
-    color: #333;
+    color: #ffffff;
 }
 
 #openAuth {
     padding: 15px 30px;
     border-radius: 25px;
     border: none;
-    background: #f3ada8;
+    background: #97b3ef;
     color: white;
     font-weight: bold;
     cursor: pointer;
@@ -270,21 +284,27 @@ input {
 .logo-main {
     font-size: 24px;
     font-weight: bold;
-    color: #333;
+    color: #ffffff;
 }
-
+.brand {
+    margin: 0;
+    font-size: clamp(2rem, 3vw, 4rem);
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 6px 20px rgba(108, 93, 211, 0.2);
+}
 nav a {
     text-decoration: none;
-    color: #555;
+    color: #ffffff;
     margin-right: 20px;
     font-weight: 500;
 }
 
 .auth-trigger {
     padding: 10px 25px;
-    border: 2px solid #f3ada8;
+    border: 2px solid #97b3ef;
     background: transparent;
-    color: #f3ada8;
+    color: #97b3ef;
     border-radius: 20px;
     cursor: pointer;
     font-weight: bold;
@@ -292,31 +312,30 @@ nav a {
 }
 
 .auth-trigger:hover {
-    background: #f3ada8;
+    background: #97b3ef;
     color: white;
 }
 
 .hero-section {
     text-align: center;
     max-width: 600px;
-    color: #333;
+    color: #ffffff;
 }
 
 .hero-section h1 {
     font-size: 48px;
     margin-bottom: 20px;
-    color: #444;
+    color: #ffffff;
 }
 
 .cta-button {
     padding: 15px 40px;
     font-size: 18px;
-    background: #f3ada8;
+    background: #97b3ef;
     color: white;
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(243, 173, 168, 0.4);
+    box-shadow: 0 4px 15px rgba(168, 173, 243, 0.4);
     margin-top: 30px;
 }
-

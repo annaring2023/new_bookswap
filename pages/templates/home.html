@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* Додатковий стиль, щоб вікно виглядало гарно */
         body { margin: 0; font-family: 'Inter', sans-serif; }
         a { text-decoration: none; }
 
@@ -55,11 +54,12 @@
 }
     </style>
 </head>
-<body>
+<body data-auth-open="{% if auth_open %}true{% endif %}"
+      data-auth-tab="{% if auth_tab %}{{ auth_tab }}{% endif %}">
     <header class="site-header">
-        <div class="logo-main">💜 BookSwap</div>
+        <div class="brand">💜 BookSwap</div>
         <nav>
-            <a href="{% url 'catalog' %}">Каталог</a>
+            <!-- <a href="{% url 'catalog' %}">Каталог</a> -->
             <a href="#">Про нас</a>
             <button class="auth-trigger" id="openAuth">Увійти</button>
         </nav>
@@ -87,13 +87,7 @@
 
             <div class="form-section">
 
-                {% if messages %}
-                    {% for message in messages %}
-                        <div style="background: #ffcccc; color: #cc0000; padding: 10px; border-radius: 5px; margin-bottom: 10px; text-align: center;">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
+
 
                 <div class="form-card" id="signupCard">
                     <div class="toggle-buttons">
@@ -101,7 +95,13 @@
                         <button class="btn-toggle active" type="button">Створити акаунт</button>
                     </div>
                     <h2>Створити акаунт</h2>
-
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div style="background: #ffcccc; color: #cc0000; padding: 10px; border-radius: 5px; margin-bottom: 10px; text-align: center;">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
                     <form action="{% url 'register' %}" method="POST">
                         {% csrf_token %}
                         <input type="text" name="username" placeholder="Ім'я користувача" required>
@@ -119,7 +119,13 @@
                         <button class="btn-toggle" type="button" onclick="showSignup()">Створити акаунт</button>
                     </div>
                     <h2>З поверненням!</h2>
-
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div style="background: #ffcccc; color: #cc0000; padding: 10px; border-radius: 5px; margin-bottom: 10px; text-align: center;">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
                     <form action="{% url 'login_user' %}" method="POST">
                         {% csrf_token %}
                         <input type="text" name="username" placeholder="Ім'я користувача" required>
@@ -134,12 +140,11 @@
         </div>
     </div>
 
-    <script>
+    <!-- <script>
         const modal = document.getElementById('authModal');
         const signupCard = document.getElementById('signupCard');
         const loginCard = document.getElementById('loginCard');
 
-        // Відкриття вікна
         document.getElementById('openAuth').onclick = () => {
             modal.classList.add('active');
             showLogin();
@@ -150,11 +155,10 @@
             showSignup();
         }
 
-        // Закриття
+
         document.getElementById('closeAuth').onclick = () => modal.classList.remove('active');
         window.onclick = (e) => { if (e.target == modal) modal.classList.remove('active'); };
 
-        // Перемикання вкладок
         function showLogin() {
             signupCard.style.display = 'none';
             loginCard.style.display = 'block';
@@ -163,6 +167,54 @@
             loginCard.style.display = 'none';
             signupCard.style.display = 'block';
         }
+        {% if auth_open %}
+            modal.classList.add('active');
+        {% if auth_tab == 'login' %}
+            showLogin();
+        {% elif auth_tab == 'signup' %}
+            showSignup();
+        {% endif %}
+        {% endif %}
+    </script> -->
+    <script>
+    const modal = document.getElementById('authModal');
+    const signupCard = document.getElementById('signupCard');
+    const loginCard = document.getElementById('loginCard');
+
+    document.getElementById('openAuth').onclick = () => {
+        modal.classList.add('active');
+        showLogin();
+    };
+
+    function openSignup() {
+        modal.classList.add('active');
+        showSignup();
+    }
+
+    document.getElementById('closeAuth').onclick = () => modal.classList.remove('active');
+    window.onclick = (e) => { if (e.target == modal) modal.classList.remove('active'); };
+
+    function showLogin() {
+        signupCard.style.display = 'none';
+        loginCard.style.display = 'block';
+    }
+    function showSignup() {
+        loginCard.style.display = 'none';
+        signupCard.style.display = 'block';
+    }
+
+    const body = document.body;
+    const shouldOpen = body.dataset.authOpen === 'true';
+    const tab = body.dataset.authTab || 'login';
+
+    if (shouldOpen) {
+        modal.classList.add('active');
+        if (tab === 'signup')
+            showSignup();
+        else
+            showLogin();
+    }
     </script>
+
 </body>
 </html>

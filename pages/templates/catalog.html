@@ -11,7 +11,7 @@
 <body>
     <div class="page-bg">
         <header class="top-bar">
-            <h1 class="brand">BookSwap</h1>
+            <h3 class="brand">BookSwap 💜</h3>
             <nav class="top-actions" aria-label="Швидкі дії">
                 <a href="{% url 'settings' %}" class="icon-link" aria-label="Налаштування">
                     <span class="m-icon" aria-hidden="true">
@@ -52,7 +52,7 @@
                         </span>
                     </button>
                 </div>
-
+<!--
                 <section class="filter-panel" id="filterPanel">
                     <div class="panel-head">
                         <h3>Знайдіть свій збіг</h3>
@@ -125,8 +125,82 @@
                     <button class="results-btn" type="submit">Показати результати</button>
                 </section>
             </form>
-        </section>
+        </section> -->
+        <section class="filter-panel" id="filterPanel">
+            <div class="panel-head">
+                <h3>Знайдіть свій збіг</h3>
+                <button class="close-filter" id="closeFilter" type="button">
+                    <span class="m-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+                    </span>
+                </button>
+            </div>
 
+            <div class="filter-block">
+                <p>Оберіть жанр</p>
+                <div class="chip-row">
+                    <label class="chip"><input type="radio" name="genre" value="" {% if not genre_filter %}checked{% endif %}>Усі</label>
+                    {% for code, label in genre_choices %}
+                        <label class="chip">
+                            <input type="radio" name="genre" value="{{ code }}" {% if genre_filter == code %}checked{% endif %}>
+                            {{ label }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- <div class="filter-block">
+                <p>Оберіть стан книги</p>
+                <div class="chip-row">
+                    <label class="chip"><input type="radio" name="condition" value="" {% if not condition_filter %}checked{% endif %}>Усі</label>
+                    <label class="chip"><input type="radio" name="condition" value="almost_new" {% if condition_filter == 'almost_new' %}checked{% endif %}>Майже нова</label>
+                    <label class="chip"><input type="radio" name="condition" value="average" {% if condition_filter == 'average' %}checked{% endif %}>Середній стан</label>
+                    <label class="chip"><input type="radio" name="condition" value="poor" {% if condition_filter == 'poor' %}checked{% endif %}>Поганий стан</label>
+                </div>
+            </div> -->
+
+            <div class="filter-block">
+                <p>Оберіть автора</p>
+                <input class="author-input" type="text" name="author" value="{{ author_filter }}" placeholder="Введіть автора">
+            </div>
+
+            <div class="filter-block">
+                <p>Оберіть мову книги</p>
+                <div class="chip-row">
+                    <label class="chip"><input type="radio" name="language" value="" {% if not language_filter %}checked{% endif %}>Усі</label>
+
+                    <label class="chip"><input type="radio" name="language" value="Українська" {% if language_filter == 'Українська' %}checked{% endif %}>Українська</label>
+
+                    <label class="chip"><input type="radio" name="language" value="Англійська" {% if language_filter == 'Англійська' %}checked{% endif %}>Англійська</label>
+
+                    <label class="chip"><input type="radio" name="language" value="Польська" {% if language_filter == 'Польська' %}checked{% endif %}>Польська</label>
+
+                    <label class="chip"><input type="radio" name="language" value="Німецька" {% if language_filter == 'Німецька' %}checked{% endif %}>Німецька</label>
+
+                    <label class="chip"><input type="radio" name="language" value="Французька" {% if language_filter == 'Французька' %}checked{% endif %}>Французька</label>
+
+                    <label class="chip"><input type="radio" name="language" value="Інша" {% if language_filter == 'Інша' %}checked{% endif %}>Інша</label>
+                </div>
+            </div>
+
+            <!-- <div class="filter-block">
+                <p>Оберіть тип палітурки</p>
+                <div class="chip-row">
+                    <label class="chip"><input type="radio" name="binding_filter" value="" {% if not binding_filter %}checked{% endif %}>Усі</label>
+                    <label class="chip"><input type="radio" name="binding_filter" value="hard" {% if binding_filter == 'hard' %}checked{% endif %}>Тверда</label>
+                    <label class="chip"><input type="radio" name="binding_filter" value="soft" {% if binding_filter == 'soft' %}checked{% endif %}>М’яка</label>
+                </div>
+            </div> -->
+
+            <div class="filter-block">
+                <p>Кількість сторінок (до)</p>
+                <input class="author-input" type="number" name="pages_filter" value="{{ pages_filter }}" placeholder="Наприклад: 400">
+            </div>
+
+            <button class="results-btn" type="submit">Показати результати</button>
+            <a href="{% url 'catalog' %}" class="reset-btn" style="display: block; text-align: center; margin-top: 10px; text-decoration: none; color: gray;">Скинути все</a>
+        </form>
+    </section>
         <main class="catalog-layout">
             <section class="feed-grid">
                 {% for listing in listings %}
@@ -174,6 +248,7 @@
                             </div>
                         </article>
                     {% endif %}
+                
                 {% empty %}
                     <article class="book-card book-card-empty">
                         <p>Поки немає оголошень у каталозі.</p>

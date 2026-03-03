@@ -187,7 +187,6 @@
             filter: brightness(1.03);
         }
 
-        /* ===== Report button + modal ===== */
         .chat-head-row {
             display: flex;
             align-items: center;
@@ -252,8 +251,8 @@
         .report-overlay.open { display: flex; }
 
         .report-modal {
-            width: 380px;     /* ~10cm */
-            height: 380px;    /* ~10cm */
+            width: 380px;
+            height: 380px;
             background: #fff;
             border-radius: 16px;
             padding: 14px;
@@ -359,12 +358,16 @@
 
                     <div class="chat-head-row">
                         <div class="chat-head-left">
+                            <a href="{% url 'user_profile' selected_peer.id %}">
                             {% if selected_peer_avatar %}
                                 <img src="{{ selected_peer_avatar }}" alt="avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;background:#ececec;">
                             {% else %}
                                 <div class="chat-head-fallback">{{ selected_peer.username|slice:":1"|upper }}</div>
                             {% endif %}
-                            <h3 style="margin:0;">Чат: {{ selected_peer.username }}</h3>
+                            </a>
+                            <h3 style="margin:0;">Чат:<a href="{% url 'user_profile' selected_peer.id %}" style="text-decoration: none; color: inherit;">
+        {{ selected_peer.username }}
+    </a></h3>
                         </div>
 
                         <button type="button" class="report-btn" id="openReportBtn" title="Report">
@@ -380,7 +383,6 @@
                             <div class="msg {% if m.sender_id == request.user.id %}me{% endif %}">
                                 <div>{{ m.text }}</div>
 
-                                <!-- ✅ Time + (for my messages) read status -->
                                 <div class="meta">
                                     {{ m.created_at|date:"d.m H:i" }}
                                     {% if m.sender_id == request.user.id %}
@@ -399,7 +401,6 @@
                         <button type="submit">Надіслати</button>
                     </form>
 
-                    <!-- Report modal -->
                     <div class="report-overlay" id="reportOverlay">
                         <div class="report-modal">
                             <button type="button" class="report-x" id="closeReportX" aria-label="Close">×</button>
@@ -454,7 +455,6 @@
             });
         }
 
-        // fake "send" (front only). later can connect to backend.
         if (sendReportBtn) {
             sendReportBtn.addEventListener('click', () => {
                 if (!reportText.value.trim()) {

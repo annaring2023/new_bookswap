@@ -15,7 +15,9 @@ body {
     min-height: 100vh;
     padding: 24px;
 }
-
+.card_owner{
+    text-decoration: none;
+}
 .head {
     display: flex;
     justify-content: space-between;
@@ -42,7 +44,7 @@ body {
     height: 58px;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.96);
-    color: #6c5dd3;
+    color: #97b3ef;
     text-decoration: none;
     font-size: 1.8rem;
     display: inline-flex;
@@ -110,6 +112,7 @@ body {
     margin: 6px 0;
     font-size: 1.05rem;
     line-height: 1.4;
+    text-decoration: none;
 }
 
 .flash-wrap {
@@ -127,6 +130,7 @@ body {
 
 .owner {
     margin-top: 14px;
+    text-decoration: none;
 }
 
 .wishlist-action {
@@ -253,22 +257,24 @@ body {
     line-height: 1.25;
     letter-spacing: 0.01em;
     color: #fff;
-    background: #6f97cc;
+    background: #97b3ef;
     cursor: pointer;
     box-shadow: 0 10px 18px rgba(90, 126, 171, 0.3);
     transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+    text-decoration: none;
 }
 
 .btn-main {
-    background: #627fc5;
+    background: #97b3ef;
 }
 
 .btn-rate {
-    background: #6c5dd3;
+    background: #97b3ef;
 }
 
 .link-btn {
-    background: #627fc5;
+    /* margin-top: 10px; */
+    background: #97b3ef;
     box-shadow: 0 10px 18px rgba(90, 126, 171, 0.3);
 }
 

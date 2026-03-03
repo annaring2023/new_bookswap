@@ -65,6 +65,60 @@ def home(request):
     return render(request, 'home.html')
 
 
+# def catalog(request):
+#     if not request.user.is_authenticated:
+#         messages.error(request, 'Спочатку увійдіть в акаунт')
+#         return redirect('home')
+
+#     query = request.GET.get('q', '').strip()
+#     search_in_description = request.GET.get('desc') == '1'
+#     genre_filter = request.GET.get('genre', '').strip()
+#     condition_filter = request.GET.get('condition_filter', '').strip()
+#     author_filter = request.GET.get('author', '').strip()
+#     language_filter = request.GET.get('language', '').strip()
+#     binding_filter = request.GET.get('binding_filter', '').strip()
+#     pages_filter = request.GET.get('pages_filter', '').strip()
+
+#     listings = Listing.objects.select_related('owner').exclude(owner=request.user)
+
+#     wishlisted_ids = []
+#     if request.user.is_authenticated:
+#         wishlisted_ids = Wishlist.objects.filter(user=request.user).values_list('listing_id', flat=True)
+
+#     if query:
+#         if search_in_description:
+#             listings = listings.filter(Q(title__icontains=query) | Q(description__icontains=query))
+#         else:
+#             listings = listings.filter(title__icontains=query)
+
+#     if genre_filter:
+#         listings = listings.filter(genre__icontains=genre_filter)
+#     if condition_filter:
+#         listings = listings.filter(condition=condition_filter)
+#     if author_filter:
+#         listings = listings.filter(author__icontains=author_filter)
+#     if language_filter:
+#         listings = listings.filter(language__icontains=language_filter)
+#     if binding_filter:
+#         listings = listings.filter(binding_type=binding_filter)
+#     if pages_filter and pages_filter.isdigit():
+#         listings = listings.filter(pages__lte=int(pages_filter))
+
+#     return render(request, 'catalog.html', {
+#         'listings': listings,
+#         'query': query,
+#         'search_in_description': search_in_description,
+#         'genre': genre_filter,
+#         'genre_choices': FAVORITE_GENRE_CHOICES,
+#         'condition_filter': condition_filter,
+#         'author': author_filter,
+#         'language': language_filter,
+#         'binding_filter': binding_filter,
+#         'pages_filter': pages_filter,
+#         'wishlisted_ids': wishlisted_ids,
+#         'unread_count': _unread_messages_count(request.user),
+#     })
+
 def catalog(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Спочатку увійдіть в акаунт')
@@ -73,13 +127,13 @@ def catalog(request):
     query = request.GET.get('q', '').strip()
     search_in_description = request.GET.get('desc') == '1'
     genre_filter = request.GET.get('genre', '').strip()
-    condition_filter = request.GET.get('condition_filter', '').strip()
+    condition_filter = request.GET.get('condition', '').strip()
     author_filter = request.GET.get('author', '').strip()
     language_filter = request.GET.get('language', '').strip()
     binding_filter = request.GET.get('binding_filter', '').strip()
     pages_filter = request.GET.get('pages_filter', '').strip()
 
-    listings = Listing.objects.select_related('owner').all()
+    listings = Listing.objects.select_related('owner').exclude(owner=request.user)
 
     wishlisted_ids = []
     if request.user.is_authenticated:
@@ -93,14 +147,19 @@ def catalog(request):
 
     if genre_filter:
         listings = listings.filter(genre__icontains=genre_filter)
+
     if condition_filter:
         listings = listings.filter(condition=condition_filter)
+
     if author_filter:
         listings = listings.filter(author__icontains=author_filter)
+
     if language_filter:
         listings = listings.filter(language__icontains=language_filter)
+
     if binding_filter:
         listings = listings.filter(binding_type=binding_filter)
+
     if pages_filter and pages_filter.isdigit():
         listings = listings.filter(pages__lte=int(pages_filter))
 
@@ -108,17 +167,16 @@ def catalog(request):
         'listings': listings,
         'query': query,
         'search_in_description': search_in_description,
-        'genre': genre_filter,
+        'genre_filter': genre_filter,
+        'genre_choices': FAVORITE_GENRE_CHOICES,
         'condition_filter': condition_filter,
-        'author': author_filter,
-        'language': language_filter,
+        'author_filter': author_filter,
+        'language_filter': language_filter,
         'binding_filter': binding_filter,
         'pages_filter': pages_filter,
         'wishlisted_ids': wishlisted_ids,
         'unread_count': _unread_messages_count(request.user),
     })
-
-
 def listing_detail(request, listing_id):
     if not request.user.is_authenticated:
         messages.error(request, 'Спочатку увійдіть в акаунт')
@@ -342,27 +400,62 @@ def profile(request):
 
 # Логіка реєстрації
 def register_user(request):
+    # if request.method == 'POST':
+    #     username = request.POST['username']
+    #     email = request.POST['email']
+    #     password = request.POST['password']
+
+    #     # Перевірка, чи існує такий юзер
+    #     if User.objects.filter(username=username).exists():
+    #         messages.error(request, 'Таке ім\'я вже зайняте!')
+    #         return redirect('home')
+
+    #     # Створення користувача
+    #     user = User.objects.create_user(username=username, email=email, password=password)
+    #     login(request, user) # Одразу входимо
+    #     return redirect('catalog')
+
+    # return redirect('home')
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
 
-        # Перевірка, чи існує такий юзер
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Таке ім\'я вже зайняте!')
-            return redirect('home')
+            return render(request, 'home.html', {
+                'auth_open': True,
+                'auth_tab': 'signup',
+            })
 
-        # Створення користувача
+
         user = User.objects.create_user(username=username, email=email, password=password)
-        login(request, user) # Одразу входимо
+        login(request, user)
         return redirect('catalog')
 
-    return redirect('home')
+    return render(request, 'home.html', {
+        'auth_open': True,
+        'auth_tab': 'signup',
+    })
 
 # Логіка входу
 def login_user(request):
+    # if request.method == 'POST':
+    #     username = request.POST['username'] # Тут беремо дані з форми
+    #     password = request.POST['password']
+
+    #     user = authenticate(request, username=username, password=password)
+
+    #     if user is not None:
+    #         login(request, user)
+    #         return redirect('catalog')
+    #     else:
+    #         messages.error(request, 'Невірний логін або пароль')
+    #         return redirect('home')
+
+    # return redirect('home')
     if request.method == 'POST':
-        username = request.POST['username'] # Тут беремо дані з форми
+        username = request.POST['username']
         password = request.POST['password']
 
         user = authenticate(request, username=username, password=password)
@@ -370,11 +463,18 @@ def login_user(request):
         if user is not None:
             login(request, user)
             return redirect('catalog')
-        else:
-            messages.error(request, 'Невірний логін або пароль')
-            return redirect('home')
 
-    return redirect('home')
+        messages.error(request, 'Невірний логін або пароль')
+        return render(request, 'home.html', {
+            'auth_open': True,
+            'auth_tab': 'login',
+        })
+
+    return render(request, 'home', {
+        'auth_open': True,
+        'auth_tab': 'login',
+    })
+
 
 
 def create_listing(request):

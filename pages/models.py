@@ -15,6 +15,22 @@ class Listing(models.Model):
         ('hard', 'Тверда'),
         ('soft', 'М’яка'),
     ]
+    class Listing(models.Model):
+        LANGUAGE_CHOICES = [
+            ('Українська', 'Українська'),
+            ('Англійська', 'Англійська'),
+            ('Німецька', 'Німецька'),
+            ('Польська', 'Польська'),
+            ('Французька', 'Французька'),
+            ('Інша', 'Інша'),
+        ]
+
+        language = models.CharField(
+            max_length=60,
+            choices=LANGUAGE_CHOICES,
+            blank=True,
+            default='Українська'
+        )
 
     def is_favored_by(self, user):
         if user.is_anonymous:

@@ -40,6 +40,9 @@
             font-size: 14px;
             font-family: inherit;
         }
+        .form_control {
+        color: #4a90e2;
+}
         textarea { min-height: 100px; resize: vertical; }
         .actions {
             margin-top: 12px;
@@ -56,8 +59,21 @@
             text-align: center;
             flex: 1;
         }
-        .btn-save { background: #6C5DD3; color: #fff; }
+        .btn-save { background: #97b3ef; color: #fff; }
         .btn-back { background: #f0f0f0; color: #444; }
+
+        .btn:hover {
+            transform: scale(1.03); /* Збільшення на 5% */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-save:hover {
+            background: #87a0d7;
+        }
+        .btn-back:hover {
+            background: #e8e6f9;
+        }
+
     </style>
 </head>
 <body>
@@ -68,9 +84,33 @@
             <input type="text" name="title" value="{{ listing.title }}" placeholder="Назва книги" required>
             <input type="text" name="author" value="{{ listing.author }}" placeholder="Автор">
             <input type="number" name="publication_year" min="1000" max="2100" value="{{ listing.publication_year|default:'' }}" placeholder="Рік видання">
-            <input type="text" name="language" value="{{ listing.language }}" placeholder="Мова">
+            <div class="form-group">
+            <select name="language" id="language" class="form-control">
+                <option value="" {% if not listing.language %}selected{% endif %}>Оберіть мову</option>
+                <option value="Українська" {% if listing.language == "Українська" %}selected{% endif %}>Українська</option>
+                <option value="Англійська" {% if listing.language == "Англійська" %}selected{% endif %}>Англійська</option>
+                <option value="Німецька" {% if listing.language == "Німецька" %}selected{% endif %}>Німецька</option>
+                <option value="Польська" {% if listing.language == "Польська" %}selected{% endif %}>Польська</option>
+                <option value="Французька" {% if listing.language == "Французька" %}selected{% endif %}>Французька</option>
+                <option value="Інша" {% if listing.language == "Інша" %}selected{% endif %}>Інша</option>
+            </select>
+        </div>
             <input type="number" name="pages" min="1" value="{{ listing.pages|default:'' }}" placeholder="Кількість сторінок">
-            <input type="text" name="genre" value="{{ listing.genre }}" placeholder="Жанр">
+        <div class="form-group">
+            <select name="genre" id="genre" class="form-control">
+                <option value="" {% if not listing.genre %}selected{% endif %}>Усі жанри</option>
+                <option value="fantasy" {% if listing.genre == "fantasy" %}selected{% endif %}>Фентезі</option>
+            <option value="romance" {% if listing.genre == "romance" %}selected{% endif %}>Романтика</option>
+            <option value="detective" {% if listing.genre == "detective" %}selected{% endif %}>Детектив</option>
+            <option value="thriller" {% if listing.genre == "thriller" %}selected{% endif %}>Трилер</option>
+            <option value="scifi" {% if listing.genre == "scifi" %}selected{% endif %}>Наукова фантастика</option>
+            <option value="classic" {% if listing.genre == "classic" %}selected{% endif %}>Класика</option>
+            <option value="psychology" {% if listing.genre == "psychology" %}selected{% endif %}>Психологія</option>
+            <option value="selfhelp" {% if listing.genre == "selfhelp" %}selected{% endif %}>Саморозвиток</option>
+            <option value="history" {% if listing.genre == "history" %}selected{% endif %}>Історія</option>
+            <option value="business" {% if listing.genre == "business" %}selected{% endif %}>Бізнес</option>
+            </select>
+        </div>
             <select name="condition">
                 <option value="" {% if not listing.condition %}selected{% endif %}>Стан книги</option>
                 <option value="almost_new" {% if listing.condition == 'almost_new' %}selected{% endif %}>Almost new</option>
